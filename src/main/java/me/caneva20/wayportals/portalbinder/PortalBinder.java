@@ -48,6 +48,10 @@ public class PortalBinder implements IPortalBinder {
         }
     }
 
+    public ItemStack getStack() {
+        return stack;
+    }
+
     private void transform() {
         var portalBinderKey = keys.getPortalBinderKey();
 
