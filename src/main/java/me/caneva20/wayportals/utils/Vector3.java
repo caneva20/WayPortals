@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 public class Vector3 implements Serializable {
 
+  private static final long serialVersionUID = 1L;
+
   private final double x;
   private final double y;
   private final double z;
@@ -12,6 +14,10 @@ public class Vector3 implements Serializable {
     this.x = x;
     this.y = y;
     this.z = z;
+  }
+
+  public Vector3(Vector3Int vector3Int) {
+    this(vector3Int.getX(), vector3Int.getY(), vector3Int.getZ());
   }
 
   public double getX() {
@@ -29,6 +35,14 @@ public class Vector3 implements Serializable {
   @Override
   public String toString() {
     return "Vector3{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
+  }
+
+  public String toStringShort() {
+    return x + "," + y + "," + z;
+  }
+
+  public Vector3Int toVector3Int() {
+    return new Vector3Int((int) x, (int) y, (int) z);
   }
 
   public static Vector3 min(Vector3 a, Vector3 b) {
