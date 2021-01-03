@@ -1,11 +1,10 @@
-package me.caneva20.wayportals.items;
+package me.caneva20.wayportals.portalbinder;
 
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
 import me.caneva20.messagedispatcher.dispachers.IConsoleMessageDispatcher;
 import me.caneva20.wayportals.KeyProvider;
 import me.caneva20.wayportals.WayPortals;
-import me.caneva20.wayportals.items.portalbinder.PortalBinderUtility;
 import me.caneva20.wayportals.utils.data.PersistentLocation;
 import org.bukkit.Location;
 import org.bukkit.enchantments.Enchantment;

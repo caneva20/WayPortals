@@ -1,8 +1,9 @@
 package me.caneva20.wayportals.events;
 
 import me.caneva20.messagedispatcher.dispachers.IMessageDispatcher;
-import me.caneva20.wayportals.items.PortalBinderFactory;
-import me.caneva20.wayportals.items.portalbinder.PortalBinderUtility;
+import me.caneva20.wayportals.portalbinder.PortalBinder;
+import me.caneva20.wayportals.portalbinder.PortalBinderFactory;
+import me.caneva20.wayportals.portalbinder.PortalBinderUtility;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

@@ -1,6 +1,6 @@
 package me.caneva20.wayportals.events;
 
-import me.caneva20.wayportals.items.portalbinder.PortalBinderUtility;
+import me.caneva20.wayportals.portalbinder.PortalBinderUtility;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;

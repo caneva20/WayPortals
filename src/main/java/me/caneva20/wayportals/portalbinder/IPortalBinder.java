@@ -1,4 +1,4 @@
-package me.caneva20.wayportals.items;
+package me.caneva20.wayportals.portalbinder;
 
 import org.bukkit.Location;
 import org.jetbrains.annotations.Nullable;

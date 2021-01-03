@@ -1,4 +1,4 @@
-package me.caneva20.wayportals.items.portalbinder;
+package me.caneva20.wayportals.portalbinder;
 
 import me.caneva20.wayportals.KeyProvider;
 import org.bukkit.entity.Player;
