@@ -67,6 +67,13 @@
             <artifactId>guice</artifactId>
             <version>4.2.3</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.google.auto.factory</groupId>
+            <artifactId>auto-factory</artifactId>
+            <version>1.0-beta8</version>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
     <build>
