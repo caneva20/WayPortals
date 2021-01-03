@@ -2,6 +2,8 @@ package me.caneva20.wayportals;
 
 import co.aikar.commands.PaperCommandManager;
 import me.caneva20.messagedispatcher.dispachers.IConsoleMessageDispatcher;
+import me.caneva20.wayportals.commands.TestCommand;
+import me.caneva20.wayportals.events.BindingEventHandler;
 import me.caneva20.wayportals.events.InteractionEventHandler;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -16,6 +18,9 @@ public final class WayPortals extends JavaPlugin {
     private InteractionEventHandler interactionEventHandler;
 
     @Inject
+    private BindingEventHandler bindingEventHandler;
+
+    @Inject
     private PaperCommandManager commandManager;
 
     @Inject
@@ -28,6 +33,7 @@ public final class WayPortals extends JavaPlugin {
         injector.injectMembers(this);
 
         pluginManager.registerEvents(interactionEventHandler, this);
+        pluginManager.registerEvents(bindingEventHandler, this);
 
         dispatcher.success("Enabled! :)");
     }
