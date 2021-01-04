@@ -26,6 +26,8 @@ public final class WayPortals extends JavaPlugin {
     @Inject
     private PluginManager pluginManager;
 
+    @Inject DatabaseHandler database;
+
     @Override
     public void onEnable() {
         var injector = new BinderModule(this).createInjector();
@@ -35,10 +37,15 @@ public final class WayPortals extends JavaPlugin {
         pluginManager.registerEvents(interactionEventHandler, this);
         pluginManager.registerEvents(bindingEventHandler, this);
 
+        database.initialize(this);
+
         dispatcher.success("Enabled! :)");
     }
 
     @Override
     public void onDisable() {
+        database.close();
+
+        dispatcher.success("Disabled :(");
     }
 }
