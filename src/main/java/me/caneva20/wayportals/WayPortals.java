@@ -1,6 +1,7 @@
 package me.caneva20.wayportals;
 
 import co.aikar.commands.PaperCommandManager;
+import javax.inject.Inject;
 import me.caneva20.messagedispatcher.dispachers.IConsoleMessageDispatcher;
 import me.caneva20.wayportals.commands.WayPortalsCommand;
 import me.caneva20.wayportals.events.BindingEventHandler;
@@ -8,46 +9,46 @@ import me.caneva20.wayportals.events.InteractionEventHandler;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import javax.inject.Inject;
-
 public final class WayPortals extends JavaPlugin {
-    @Inject
-    private IConsoleMessageDispatcher dispatcher;
 
-    @Inject
-    private InteractionEventHandler interactionEventHandler;
+  @Inject
+  private IConsoleMessageDispatcher dispatcher;
 
-    @Inject
-    private BindingEventHandler bindingEventHandler;
+  @Inject
+  private InteractionEventHandler interactionEventHandler;
 
-    @Inject
-    private PaperCommandManager commandManager;
+  @Inject
+  private BindingEventHandler bindingEventHandler;
 
-    @Inject
-    private PluginManager pluginManager;
+  @Inject
+  private PaperCommandManager commandManager;
 
-    @Inject DatabaseHandler database;
+  @Inject
+  private PluginManager pluginManager;
 
-    @Override
-    public void onEnable() {
-        var injector = new BinderModule(this).createInjector();
+  @Inject
+  DatabaseHandler database;
 
-        injector.injectMembers(this);
+  @Override
+  public void onEnable() {
+    var injector = new BinderModule(this).createInjector();
 
-        commandManager.registerCommand(injector.getInstance(WayPortalsCommand.class));
+    injector.injectMembers(this);
 
-        pluginManager.registerEvents(interactionEventHandler, this);
-        pluginManager.registerEvents(bindingEventHandler, this);
+    commandManager.registerCommand(injector.getInstance(WayPortalsCommand.class));
 
-        database.initialize();
+    pluginManager.registerEvents(interactionEventHandler, this);
+    pluginManager.registerEvents(bindingEventHandler, this);
 
-        dispatcher.success("Enabled! :)");
-    }
+    database.initialize();
 
-    @Override
-    public void onDisable() {
-        database.close();
+    dispatcher.success("Enabled! :)");
+  }
 
-        dispatcher.success("Disabled :(");
-    }
+  @Override
+  public void onDisable() {
+    database.close();
+
+    dispatcher.success("Disabled :(");
+  }
 }
