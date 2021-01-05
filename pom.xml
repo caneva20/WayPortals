@@ -17,6 +17,8 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>11</java.version>
 
+    <project.minimizeJar>true</project.minimizeJar>
+
     <!-- Versioning properties -->
     <project.outputName>${project.name}</project.outputName>
     <project.versionCode>${project.version}</project.versionCode>
@@ -135,7 +137,8 @@
               <!-- Use the base jar name, to help server owners download the right jar -->
               <finalName>${project.finalNameBase}</finalName>
 
-              <minimizeJar>true</minimizeJar>
+              <minimizeJar>${project.minimizeJar}</minimizeJar>
+
               <filters>
                 <!-- Ignore manifest signatures for shading the project into an uber-jar to fix -->
                 <!-- "Invalid signature file digest for Manifest main attributes" -->
