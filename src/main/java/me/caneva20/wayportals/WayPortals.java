@@ -39,7 +39,7 @@ public final class WayPortals extends JavaPlugin {
         pluginManager.registerEvents(interactionEventHandler, this);
         pluginManager.registerEvents(bindingEventHandler, this);
 
-        database.initialize(this);
+        database.initialize();
 
         dispatcher.success("Enabled! :)");
     }
