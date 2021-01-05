@@ -26,6 +26,7 @@ public class DatabaseHandler {
     var dataFolder = plugin.getDataFolder();
 
     if (!dataFolder.exists()) {
+      //noinspection ResultOfMethodCallIgnored
       dataFolder.mkdirs();
     }
 
