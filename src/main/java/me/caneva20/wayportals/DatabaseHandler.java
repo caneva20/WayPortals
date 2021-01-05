@@ -43,8 +43,8 @@ public class DatabaseHandler {
 
   private void createDatabase() {
     try {
-      DB.executeUpdate("CREATE TABLE IF NOT EXISTS 'portals'( 'id' INTEGER NOT NULL, 'id_string' TEXT NOT NULL, 'linked_portal_id' INTEGER, 'from_x' INTEGER NOT NULL DEFAULT 0, 'from_y' INTEGER NOT NULL DEFAULT 0, 'from_z' INTEGER NOT NULL DEFAULT 0, 'to_x' INTEGER NOT NULL DEFAULT 0, 'to_y' INTEGER NOT NULL DEFAULT 0, 'to_z' INTEGER NOT NULL DEFAULT 0, FOREIGN KEY('linked_portal_id') REFERENCES 'portals'('id'), PRIMARY KEY('id' AUTOINCREMENT));");
-      DB.executeUpdate("CREATE INDEX IF NOT EXISTS 'portal_id' ON 'portals'( 'id', 'from_x');");
+      DB.executeUpdate("CREATE TABLE IF NOT EXISTS 'portals' ('id' INTEGER NOT NULL, 'id_string' TEXT NOT NULL UNIQUE, 'linked_portal_id' INTEGER, 'world' TEXT NOT NULL DEFAULT '', 'min_x' INTEGER NOT NULL DEFAULT 0, 'min_y' INTEGER NOT NULL DEFAULT 0, 'min_z' INTEGER NOT NULL DEFAULT 0, 'max_x' INTEGER NOT NULL DEFAULT 0, 'max_y' INTEGER NOT NULL DEFAULT 0, 'max_z' INTEGER NOT NULL DEFAULT 0, PRIMARY KEY('id' AUTOINCREMENT), FOREIGN KEY('linked_portal_id') REFERENCES 'portals'('id'))");
+      DB.executeUpdate("CREATE INDEX IF NOT EXISTS 'portal_id' ON 'portals'('id', 'id_string')");
     } catch (SQLException ex) {
       ex.printStackTrace();
     }
