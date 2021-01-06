@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import me.caneva20.messagedispatcher.dispachers.IMessageDispatcher;
 import me.caneva20.wayportals.portal.Portal;
-import me.caneva20.wayportals.portal.PortalDB;
 import me.caneva20.wayportals.portal.PortalUtility;
 import me.caneva20.wayportals.portalbinder.PortalBinder;
 import me.caneva20.wayportals.portalbinder.PortalBinderFactory;
@@ -26,18 +25,15 @@ public class BindingEventHandler implements Listener {
   private final IMessageDispatcher dispatcher;
   private final PortalBinderFactory binderFactory;
   private final PortalBinderUtility binderUtility;
-  private final PortalDB db;
 
   @Inject
   BindingEventHandler(
       IMessageDispatcher dispatcher,
       PortalBinderFactory binderFactory,
-      PortalBinderUtility binderUtility,
-      PortalDB db) {
+      PortalBinderUtility binderUtility) {
     this.dispatcher = dispatcher;
     this.binderFactory = binderFactory;
     this.binderUtility = binderUtility;
-    this.db = db;
   }
 
   private void bindTarget(Player player, PortalBinder binder, @NotNull Portal portal) {
@@ -91,16 +87,6 @@ public class BindingEventHandler implements Listener {
       dispatcher.debug(event.getPlayer(), "Portal not found here");
 
       return;
-    }
-
-    if (db.exists(portal)) {
-      db.load(portal);
-
-      dispatcher.debug(event.getPlayer(), "Portal already created, loaded into id " + portal.id());
-    } else {
-      db.create(portal);
-
-      dispatcher.debug(event.getPlayer(), "New portal created with id " + portal.id());
     }
 
     if (!binder.hasPortal()) {
