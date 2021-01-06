@@ -1,11 +1,8 @@
 package me.caneva20.wayportals.utils;
 
-import java.io.Serializable;
 import org.jetbrains.annotations.Nullable;
 
-public class Region implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class Region {
 
   private final Vector3Int from;
   private final Vector3Int to;

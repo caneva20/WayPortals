@@ -1,10 +1,6 @@
 package me.caneva20.wayportals.utils;
 
-import java.io.Serializable;
-
-public class Vector3 implements Serializable {
-
-  private static final long serialVersionUID = 1L;
+public class Vector3 {
 
   private final double x;
   private final double y;
