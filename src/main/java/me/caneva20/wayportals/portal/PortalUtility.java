@@ -25,9 +25,9 @@ public class PortalUtility {
         .map(x -> new Vector3(x.getX(), x.getY(), x.getZ()))
         .collect(Collectors.toList());
 
-    var xs = vein.stream().map(Vector3::getX).collect(Collectors.toList());
-    var ys = vein.stream().map(Vector3::getY).collect(Collectors.toList());
-    var zs = vein.stream().map(Vector3::getZ).collect(Collectors.toList());
+    var xs = vein.stream().map(Vector3::x).collect(Collectors.toList());
+    var ys = vein.stream().map(Vector3::y).collect(Collectors.toList());
+    var zs = vein.stream().map(Vector3::z).collect(Collectors.toList());
 
     var minX = Collections.min(xs);
     var minY = Collections.min(ys);

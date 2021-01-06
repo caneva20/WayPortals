@@ -1,5 +1,10 @@
 package me.caneva20.wayportals.utils;
 
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@ToString
 public class Vector3Int {
 
   private final int x;
@@ -19,28 +24,7 @@ public class Vector3Int {
   }
 
   public Vector3Int(Vector3 vector3) {
-    this((int) vector3.getX(), (int) vector3.getY(), (int) vector3.getZ());
-  }
-
-  public int getX() {
-    return x;
-  }
-
-  public int getY() {
-    return y;
-  }
-
-  public int getZ() {
-    return z;
-  }
-
-  @Override
-  public String toString() {
-    return "Vector3{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
-  }
-
-  public String toStringShort() {
-    return x + "," + y + "," + z;
+    this((int) vector3.x(), (int) vector3.y(), (int) vector3.z());
   }
 
   public Vector3 toVector3() {
@@ -48,12 +32,10 @@ public class Vector3Int {
   }
 
   public static Vector3Int min(Vector3Int a, Vector3Int b) {
-    return new Vector3Int(Math.min(a.getX(), b.getX()), Math.min(a.getY(), b.getY()),
-        Math.min(a.getZ(), b.getZ()));
+    return new Vector3Int(Math.min(a.x(), b.x()), Math.min(a.y(), b.y()), Math.min(a.z(), b.z()));
   }
 
   public static Vector3Int max(Vector3Int a, Vector3Int b) {
-    return new Vector3Int(Math.max(a.getX(), b.getX()), Math.max(a.getY(), b.getY()),
-        Math.max(a.getZ(), b.getZ()));
+    return new Vector3Int(Math.max(a.x(), b.x()), Math.max(a.y(), b.y()), Math.max(a.z(), b.z()));
   }
 }

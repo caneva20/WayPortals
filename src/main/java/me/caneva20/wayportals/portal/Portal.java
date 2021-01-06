@@ -28,8 +28,7 @@ public class Portal extends Region {
     try {
       int count = DB.getFirstColumn(
           "SELECT count() FROM portals WHERE world = ? AND min_x = ? AND min_y = ? AND min_z = ? AND max_x = ? AND max_y = ? AND max_z = ? LIMIT 1",
-          getWorldName(), getFrom().getX(), getFrom().getY(), getFrom().getZ(), getTo().getX(),
-          getTo().getY(), getTo().getZ());
+          worldName(), from().x(), from().y(), from().z(), to().x(), to().y(), to().z());
 
       return count > 0;
     } catch (SQLException ex) {
@@ -43,10 +42,9 @@ public class Portal extends Region {
     try {
       //The (int) cast IS required
       //noinspection RedundantCast
-      this.id = (int)DB.getFirstColumn(
+      this.id = (int) DB.getFirstColumn(
           "SELECT id FROM portals WHERE world = ? AND min_x = ? AND min_y = ? AND min_z = ? AND max_x = ? AND max_y = ? AND max_z = ? LIMIT 1",
-          getWorldName(), getFrom().getX(), getFrom().getY(), getFrom().getZ(), getTo().getX(),
-          getTo().getY(), getTo().getZ());
+          worldName(), from().x(), from().y(), from().z(), to().x(), to().y(), to().z());
     } catch (SQLException ex) {
       ex.printStackTrace();
     }
@@ -56,8 +54,7 @@ public class Portal extends Region {
     try {
       this.id = DB.executeInsert(
           "INSERT INTO portals(world, min_x, min_y, min_z, max_x, max_y, max_z) VALUES(?, ?, ?, ?, ?, ?, ?)",
-          getWorldName(), getFrom().getX(), getFrom().getY(), getFrom().getZ(), getTo().getX(),
-          getTo().getY(), getTo().getZ());
+          worldName(), from().x(), from().y(), from().z(), to().x(), to().y(), to().z());
     } catch (SQLException ex) {
       ex.printStackTrace();
     }
@@ -75,8 +72,7 @@ public class Portal extends Region {
     try {
       DB.executeUpdate(
           "UPDATE portals SET world = ?, min_x = ?, min_y = ?, min_z = ?, max_x = ?, max_y = ?, max_z = ? WHERE id = ?",
-          getWorldName(), getFrom().getX(), getFrom().getY(), getFrom().getZ(), getTo().getX(),
-          getTo().getY(), getTo().getZ(), id);
+          worldName(), from().x(), from().y(), from().z(), to().x(), to().y(), to().z(), id);
     } catch (SQLException ex) {
       ex.printStackTrace();
     }
