@@ -1,12 +1,12 @@
 package me.caneva20.wayportals.portalbinder;
 
-import org.bukkit.Location;
+import me.caneva20.wayportals.portal.Portal;
 import org.jetbrains.annotations.Nullable;
 
 public interface IPortalBinder {
-    void setTarget(Location location);
+    void setPortal(Portal portal);
 
-    @Nullable Location getTarget();
+    @Nullable Portal getPortal();
 
-    boolean hasTarget();
+    boolean hasPortal();
 }

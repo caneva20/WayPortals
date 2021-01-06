@@ -2,11 +2,13 @@ package me.caneva20.wayportals.portalbinder;
 
 import com.google.auto.factory.AutoFactory;
 import com.google.auto.factory.Provided;
+import java.util.ArrayList;
+import java.util.Objects;
+import javax.inject.Inject;
 import me.caneva20.messagedispatcher.dispachers.IConsoleMessageDispatcher;
 import me.caneva20.wayportals.KeyProvider;
 import me.caneva20.wayportals.WayPortals;
-import me.caneva20.wayportals.utils.data.PersistentLocation;
-import org.bukkit.Location;
+import me.caneva20.wayportals.portal.Portal;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -15,31 +17,26 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Objects;
-
 @AutoFactory
 public class PortalBinder implements IPortalBinder {
     private final WayPortals plugin;
     private final KeyProvider keys;
-    private final PersistentLocation persistentLocation;
     private final IConsoleMessageDispatcher consoleDispatcher;
 
     private final ItemStack stack;
 
+    private Portal portal;
+
     @Inject
     PortalBinder(
-            @Provided WayPortals plugin,
-            @Provided KeyProvider keys,
-            @Provided PersistentLocation persistentLocation,
-            @Provided PortalBinderUtility binderUtility,
-            @Provided IConsoleMessageDispatcher consoleDispatcher,
-            ItemStack stack
+        @Provided WayPortals plugin,
+        @Provided KeyProvider keys,
+        @Provided PortalBinderUtility binderUtility,
+        @Provided IConsoleMessageDispatcher consoleDispatcher,
+        ItemStack stack
     ) {
         this.plugin = plugin;
         this.keys = keys;
-        this.persistentLocation = persistentLocation;
         this.consoleDispatcher = consoleDispatcher;
         this.stack = stack;
 
@@ -82,45 +79,13 @@ public class PortalBinder implements IPortalBinder {
         return stack.setItemMeta(meta);
     }
 
-    @Nullable
-    public Location getTarget() {
-        if (!hasTarget()) {
-            return null;
-        }
-
-        var key = keys.getPortalBinderTargetKey();
-
-        var container = getMeta().getPersistentDataContainer();
-
-        return container.get(key, persistentLocation);
-    }
-
-    public void setTarget(Location location) {
-        var meta = getMeta();
-
-        meta.getPersistentDataContainer().set(keys.getPortalBinderTargetKey(), persistentLocation, location);
-
-        updateMeta(meta);
-        updateLore();
-    }
-
-    public boolean hasTarget() {
-        var key = keys.getPortalBinderTargetKey();
-
-        var container = getMeta().getPersistentDataContainer();
-
-        return container.has(key, persistentLocation);
-    }
-
     private void updateLore() {
         var lore = new ArrayList<String>();
-        var target = getTarget();
 
         lore.add("");
 
-        if (target != null) {
-            lore.add(String.format("§eBound to: §6%s@%s,%s,%s", Objects.requireNonNull(target.getWorld()).getName(),
-                    target.getX(), target.getY(), target.getZ()));
+        if (portal != null) {
+            lore.add(String.format("§eBound to: §6%s", portal.id()));
         } else {
             lore.add("§eBound to: §6(nowhere)");
         }
@@ -132,5 +97,42 @@ public class PortalBinder implements IPortalBinder {
         meta.setLore(lore);
 
         updateMeta(meta);
+    }
+
+    @Nullable
+    public Portal getPortal() {
+        if (!hasPortal()) {
+            return null;
+        }
+
+        var key = keys.getPortalBinderTargetKey();
+
+        var container = getMeta().getPersistentDataContainer();
+
+        var portalId = container.get(key, PersistentDataType.LONG);
+
+        //Find portal from id
+
+        return portal;
+    }
+
+    public void setPortal(Portal portal) {
+        var meta = getMeta();
+
+        meta.getPersistentDataContainer().set(keys.getPortalBinderTargetKey(), PersistentDataType.LONG,
+            portal.id());
+
+        this.portal = portal;
+
+        updateMeta(meta);
+        updateLore();
+    }
+
+    public boolean hasPortal() {
+        var key = keys.getPortalBinderTargetKey();
+
+        var container = getMeta().getPersistentDataContainer();
+
+        return container.has(key, PersistentDataType.LONG);
     }
 }
