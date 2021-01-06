@@ -19,120 +19,121 @@ import org.jetbrains.annotations.Nullable;
 
 @AutoFactory
 public class PortalBinder implements IPortalBinder {
-    private final WayPortals plugin;
-    private final KeyProvider keys;
-    private final IConsoleMessageDispatcher consoleDispatcher;
 
-    private final ItemStack stack;
+  private final WayPortals plugin;
+  private final KeyProvider keys;
+  private final IConsoleMessageDispatcher consoleDispatcher;
 
-    private Portal portal;
+  private final ItemStack stack;
 
-    @Inject
-    PortalBinder(
-        @Provided WayPortals plugin,
-        @Provided KeyProvider keys,
-        @Provided PortalBinderUtility binderUtility,
-        @Provided IConsoleMessageDispatcher consoleDispatcher,
-        ItemStack stack
-    ) {
-        this.plugin = plugin;
-        this.keys = keys;
-        this.consoleDispatcher = consoleDispatcher;
-        this.stack = stack;
+  private Portal portal;
 
-        if (!binderUtility.isBinder(stack)) {
-            transform();
-        }
+  @Inject
+  PortalBinder(
+      @Provided WayPortals plugin,
+      @Provided KeyProvider keys,
+      @Provided PortalBinderUtility binderUtility,
+      @Provided IConsoleMessageDispatcher consoleDispatcher,
+      ItemStack stack
+  ) {
+    this.plugin = plugin;
+    this.keys = keys;
+    this.consoleDispatcher = consoleDispatcher;
+    this.stack = stack;
+
+    if (!binderUtility.isBinder(stack)) {
+      transform();
+    }
+  }
+
+  public ItemStack getStack() {
+    return stack;
+  }
+
+  private void transform() {
+    var portalBinderKey = keys.getPortalBinderKey();
+
+    var meta = plugin.getServer().getItemFactory().getItemMeta(stack.getType());
+
+    if (meta == null) {
+      consoleDispatcher.error("This item stack can't be transformed into a portal binder!");
+
+      return;
     }
 
-    public ItemStack getStack() {
-        return stack;
+    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
+    meta.getPersistentDataContainer().set(portalBinderKey, PersistentDataType.INTEGER, 1);
+
+    stack.setItemMeta(meta);
+    stack.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 1);
+
+    updateLore();
+  }
+
+  @NotNull
+  private ItemMeta getMeta() {
+    return Objects.requireNonNull(stack.getItemMeta());
+  }
+
+  private boolean updateMeta(ItemMeta meta) {
+    return stack.setItemMeta(meta);
+  }
+
+  private void updateLore() {
+    var lore = new ArrayList<String>();
+
+    lore.add("");
+
+    if (portal != null) {
+      lore.add(String.format("§eBound to: §6%s", portal.id()));
+    } else {
+      lore.add("§eBound to: §6(nowhere)");
     }
 
-    private void transform() {
-        var portalBinderKey = keys.getPortalBinderKey();
+    lore.add("");
 
-        var meta = plugin.getServer().getItemFactory().getItemMeta(stack.getType());
+    var meta = getMeta();
 
-        if (meta == null) {
-            consoleDispatcher.error("This item stack can't be transformed into a portal binder!");
+    meta.setLore(lore);
 
-            return;
-        }
+    updateMeta(meta);
+  }
 
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-
-        meta.getPersistentDataContainer().set(portalBinderKey, PersistentDataType.INTEGER, 1);
-
-        stack.setItemMeta(meta);
-        stack.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 1);
-
-        updateLore();
+  @Nullable
+  public Portal getPortal() {
+    if (!hasPortal()) {
+      return null;
     }
 
-    @NotNull
-    private ItemMeta getMeta() {
-        return Objects.requireNonNull(stack.getItemMeta());
-    }
+    var key = keys.getPortalBinderTargetKey();
 
-    private boolean updateMeta(ItemMeta meta) {
-        return stack.setItemMeta(meta);
-    }
+    var container = getMeta().getPersistentDataContainer();
 
-    private void updateLore() {
-        var lore = new ArrayList<String>();
+    var portalId = container.get(key, PersistentDataType.LONG);
 
-        lore.add("");
+    //Find portal from id
 
-        if (portal != null) {
-            lore.add(String.format("§eBound to: §6%s", portal.id()));
-        } else {
-            lore.add("§eBound to: §6(nowhere)");
-        }
+    return portal;
+  }
 
-        lore.add("");
+  public void setPortal(Portal portal) {
+    var meta = getMeta();
 
-        var meta = getMeta();
+    meta.getPersistentDataContainer().set(keys.getPortalBinderTargetKey(), PersistentDataType.LONG,
+        portal.id());
 
-        meta.setLore(lore);
+    this.portal = portal;
 
-        updateMeta(meta);
-    }
+    updateMeta(meta);
+    updateLore();
+  }
 
-    @Nullable
-    public Portal getPortal() {
-        if (!hasPortal()) {
-            return null;
-        }
+  public boolean hasPortal() {
+    var key = keys.getPortalBinderTargetKey();
 
-        var key = keys.getPortalBinderTargetKey();
+    var container = getMeta().getPersistentDataContainer();
 
-        var container = getMeta().getPersistentDataContainer();
-
-        var portalId = container.get(key, PersistentDataType.LONG);
-
-        //Find portal from id
-
-        return portal;
-    }
-
-    public void setPortal(Portal portal) {
-        var meta = getMeta();
-
-        meta.getPersistentDataContainer().set(keys.getPortalBinderTargetKey(), PersistentDataType.LONG,
-            portal.id());
-
-        this.portal = portal;
-
-        updateMeta(meta);
-        updateLore();
-    }
-
-    public boolean hasPortal() {
-        var key = keys.getPortalBinderTargetKey();
-
-        var container = getMeta().getPersistentDataContainer();
-
-        return container.has(key, PersistentDataType.LONG);
-    }
+    return container.has(key, PersistentDataType.LONG);
+  }
 }

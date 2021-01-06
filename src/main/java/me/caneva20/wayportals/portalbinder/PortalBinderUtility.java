@@ -11,25 +11,26 @@ import java.util.Objects;
 
 @Singleton
 public class PortalBinderUtility {
-    private final KeyProvider keys;
 
-    @Inject
-    PortalBinderUtility(KeyProvider keys) {
-        this.keys = keys;
+  private final KeyProvider keys;
+
+  @Inject
+  PortalBinderUtility(KeyProvider keys) {
+    this.keys = keys;
+  }
+
+  public boolean isBinder(ItemStack stack) {
+    if (!stack.hasItemMeta()) {
+      return false;
     }
 
-    public boolean isBinder(ItemStack stack) {
-        if (!stack.hasItemMeta()) {
-            return false;
-        }
+    return Objects.requireNonNull(stack.getItemMeta())
+        .getPersistentDataContainer()
+        .has(keys.getPortalBinderKey(), PersistentDataType.INTEGER);
+  }
 
-        return Objects.requireNonNull(stack.getItemMeta())
-                .getPersistentDataContainer()
-                .has(keys.getPortalBinderKey(), PersistentDataType.INTEGER);
-    }
-
-    public boolean hasBinderInHand(Player player) {
-        return isBinder(player.getInventory().getItemInMainHand()) ||
-                isBinder(player.getInventory().getItemInOffHand());
-    }
+  public boolean hasBinderInHand(Player player) {
+    return isBinder(player.getInventory().getItemInMainHand()) ||
+        isBinder(player.getInventory().getItemInOffHand());
+  }
 }
