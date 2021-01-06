@@ -44,6 +44,10 @@ public class BindingEventHandler implements Listener {
   private void linkPortals(Player player, PortalBinder binder, @NotNull Portal portal) {
     player.getInventory().remove(binder.getStack());
 
+    if (binder.hasPortal()) {
+      portal.link(binder.getPortal());
+    }
+
     dispatcher.debug(player, portal.toString());
     dispatcher.debug(player, String.format("ID: %s", portal.id()));
   }

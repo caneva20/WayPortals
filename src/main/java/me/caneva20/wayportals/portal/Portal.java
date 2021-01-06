@@ -14,14 +14,22 @@ public class Portal extends Region {
   @Getter
   private long id;
 
-  public Portal(Vector3Int min, Vector3Int max, @Nullable String worldName) {
+  @Getter
+  @ToString.Exclude
+  private Portal link;
+
+  private Portal(Vector3Int min, Vector3Int max, @Nullable String worldName, boolean loadLInk) {
     super(min, max, worldName);
 
     if (exists()) {
-      load();
+      load(loadLInk);
     } else {
       create();
     }
+  }
+
+  public Portal(Vector3Int min, Vector3Int max, @Nullable String worldName) {
+    this(min, max, worldName, true);
   }
 
   private boolean exists() {
@@ -38,13 +46,21 @@ public class Portal extends Region {
     }
   }
 
-  private void load() {
+  private void load(boolean loadLink) {
     try {
-      //The (int) cast IS required
-      //noinspection RedundantCast
-      this.id = (int) DB.getFirstColumn(
-          "SELECT id FROM portals WHERE world = ? AND min_x = ? AND min_y = ? AND min_z = ? AND max_x = ? AND max_y = ? AND max_z = ? LIMIT 1",
+      var row = DB.getFirstRow(
+          "SELECT id, linked_portal_id FROM portals WHERE world = ? AND min_x = ? AND min_y = ? AND min_z = ? AND max_x = ? AND max_y = ? AND max_z = ? LIMIT 1",
           worldName(), from().x(), from().y(), from().z(), to().x(), to().y(), to().z());
+
+      this.id = row.getInt("id");
+
+      if (loadLink) {
+        var linkedPortalId = (Number) row.get("linked_portal_id");
+
+        if (linkedPortalId != null) {
+          link = find(linkedPortalId.intValue(), false);
+        }
+      }
     } catch (SQLException ex) {
       ex.printStackTrace();
     }
@@ -57,6 +73,31 @@ public class Portal extends Region {
           worldName(), from().x(), from().y(), from().z(), to().x(), to().y(), to().z());
     } catch (SQLException ex) {
       ex.printStackTrace();
+    }
+  }
+
+  private void setLinkId(@Nullable Long linkedPortalId) {
+    try {
+      DB.executeUpdate("UPDATE portals SET linked_portal_id = ? WHERE id = ?", linkedPortalId, id);
+    } catch (SQLException ex) {
+      ex.printStackTrace();
+    }
+  }
+
+  private void link(@Nullable Portal portal, boolean updateOther) {
+    if (hasLink()) {
+      link.link(null, false);
+    }
+
+    if (portal == null) {
+      setLinkId(null);
+    } else {
+      setLinkId(portal.id());
+      link = portal;
+
+      if (updateOther) {
+        portal.link(this, false);
+      }
     }
   }
 
@@ -78,7 +119,15 @@ public class Portal extends Region {
     }
   }
 
-  public static @Nullable Portal find(long id) {
+  public boolean hasLink() {
+    return link != null;
+  }
+
+  public void link(@Nullable Portal portal) {
+    link(portal, true);
+  }
+
+  private static @Nullable Portal find(long id, boolean loadLink) {
     try {
       var row = DB.getFirstRow("SELECT * FROM portals WHERE id = ? LIMIT 1", id);
 
@@ -94,10 +143,15 @@ public class Portal extends Region {
       var maxY = row.getInt("max_y");
       var maxZ = row.getInt("max_z");
 
-      return new Portal(new Vector3Int(minX, minY, minZ), new Vector3Int(maxX, maxY, maxZ), world);
+      return new Portal(new Vector3Int(minX, minY, minZ), new Vector3Int(maxX, maxY, maxZ), world,
+          loadLink);
     } catch (SQLException ex) {
       ex.printStackTrace();
       return null;
     }
+  }
+
+  public static @Nullable Portal find(long id) {
+    return find(id, true);
   }
 }
