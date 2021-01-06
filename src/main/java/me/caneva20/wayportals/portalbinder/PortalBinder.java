@@ -44,6 +44,14 @@ public class PortalBinder implements IPortalBinder {
     if (!binderUtility.isBinder(stack)) {
       transform();
     }
+
+    if (hasPortal()) {
+      var portalId = getPortalId();
+
+      if (portalId != null) {
+        portal = Portal.find(portalId);
+      }
+    }
   }
 
   public ItemStack getStack() {
@@ -101,19 +109,17 @@ public class PortalBinder implements IPortalBinder {
   }
 
   @Nullable
-  public Portal getPortal() {
-    if (!hasPortal()) {
-      return null;
-    }
-
+  private Long getPortalId() {
     var key = keys.getPortalBinderTargetKey();
 
     var container = getMeta().getPersistentDataContainer();
 
-    var portalId = container.get(key, PersistentDataType.LONG);
+    return container.get(key, PersistentDataType.LONG);
+  }
 
-    //Find portal from id
-
+  @Nullable
+  @Override
+  public Portal getPortal() {
     return portal;
   }
 
