@@ -6,6 +6,7 @@ import me.caneva20.messagedispatcher.dispachers.IConsoleMessageDispatcher;
 import me.caneva20.wayportals.commands.WayPortalsCommand;
 import me.caneva20.wayportals.events.BindingEventHandler;
 import me.caneva20.wayportals.events.InteractionEventHandler;
+import me.caneva20.wayportals.events.TeleportEventHandler;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -19,6 +20,9 @@ public final class WayPortals extends JavaPlugin {
 
   @Inject
   private BindingEventHandler bindingEventHandler;
+
+  @Inject
+  private TeleportEventHandler teleportEventHandler;
 
   @Inject
   private PaperCommandManager commandManager;
@@ -39,6 +43,7 @@ public final class WayPortals extends JavaPlugin {
 
     pluginManager.registerEvents(interactionEventHandler, this);
     pluginManager.registerEvents(bindingEventHandler, this);
+    pluginManager.registerEvents(teleportEventHandler, this);
 
     database.initialize();
 
