@@ -1,8 +1,8 @@
-name: ${pluginDescription.name}
-description: ${project.description}
-authors: [${pluginDescription.authors}]
-website: ${project.url}
-main: ${pluginDescription.main}
-version: ${pluginDescription.version}
-api-version: 1.16
-depend: [ C20Core ]
+name: ${name}
+description: ${description}
+authors: [${authors}]
+website: ${website}
+main: ${main}
+version: ${version}
+api-version: ${api_version}
+depend: [${depend}]
