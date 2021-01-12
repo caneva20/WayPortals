@@ -15,6 +15,9 @@ public class Portal extends Region {
   private long id;
 
   @Getter
+  private PortalOrientation orientation;
+
+  @Getter
   @ToString.Exclude
   private Portal link;
 
@@ -26,10 +29,17 @@ public class Portal extends Region {
     } else {
       create();
     }
+
+    updateOrientation();
   }
 
   public Portal(Vector3Int min, Vector3Int max, @Nullable String worldName) {
     this(min, max, worldName, true);
+  }
+
+  private void updateOrientation() {
+    orientation = from().z() != to().z() ? PortalOrientation.northSouth(from())
+        : PortalOrientation.westEast(from());
   }
 
   private boolean exists() {

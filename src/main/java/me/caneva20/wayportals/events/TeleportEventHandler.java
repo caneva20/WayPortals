@@ -67,7 +67,9 @@ public class TeleportEventHandler implements Listener {
 
     var world = plugin.getServer().getWorld(Objects.requireNonNull(link.worldName()));
 
-    return new Location(world, x, y, z, from.getYaw(), from.getPitch());
+    var yaw = portal.orientation().getYawTo(link.orientation());
+
+    return new Location(world, x, y, z, from.getYaw() + yaw, from.getPitch());
   }
 
   @EventHandler
