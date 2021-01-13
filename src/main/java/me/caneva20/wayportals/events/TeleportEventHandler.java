@@ -3,9 +3,10 @@ package me.caneva20.wayportals.events;
 import java.util.Objects;
 import javax.inject.Inject;
 import me.caneva20.paperlib.PaperLib;
+import me.caneva20.wayportals.portal.OrientationAxis;
 import me.caneva20.wayportals.portal.Portal;
 import me.caneva20.wayportals.portal.PortalUtility;
-import me.caneva20.wayportals.utils.MathUtils;
+import me.caneva20.wayportals.utils.Vector2;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -51,25 +52,20 @@ public class TeleportEventHandler implements Listener {
 
   private Location getDestination(Portal portal, Location from) {
     var link = portal.link();
-    final var P = .3; //Width factor
-    final var Q = .8; //Height factor
 
-    var x = MathUtils
-        .map(from.getX(), portal.from().x() + P, portal.to().x() - P + 1, link.from().x() + P,
-            link.to().x() - P + 1);
+    var fromPos = new Vector2(portal.orientation().crossAxisPos(from), from.getY());
 
-    var y = MathUtils.map(from.getY(), portal.from().y(), portal.to().y() - Q, link.from().y(),
-        link.to().y() - Q);
-
-    var z = MathUtils
-        .map(from.getZ(), portal.from().z() + P, portal.to().z() - P + 1, link.from().z() + P,
-            link.to().z() - P + 1);
-
+    var target = portal.dimensions().map(fromPos, link.dimensions());
+    var yaw = portal.orientation().getYawTo(link.orientation());
     var world = plugin.getServer().getWorld(Objects.requireNonNull(link.worldName()));
 
-    var yaw = portal.orientation().getYawTo(link.orientation());
+    if (link.orientation().axis() == OrientationAxis.Z) {
+      return new Location(world, link.orientation().mainAxisPos(link), target.y(), target.x(),
+          from.getYaw() + yaw, from.getPitch());
+    }
 
-    return new Location(world, x, y, z, from.getYaw() + yaw, from.getPitch());
+    return new Location(world, target.x(), target.y(), link.orientation().mainAxisPos(link),
+        from.getYaw() + yaw, from.getPitch());
   }
 
   @EventHandler

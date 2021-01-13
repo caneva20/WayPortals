@@ -1,26 +1,32 @@
 package me.caneva20.wayportals.portal;
 
-import me.caneva20.wayportals.utils.Vector3Int;
+import lombok.Getter;
+import lombok.ToString;
+import me.caneva20.wayportals.utils.Region;
+import me.caneva20.wayportals.utils.Vector3;
+import org.bukkit.Location;
 
+@Getter
+@ToString
 public class PortalOrientation {
 
-  private final Vector3Int position;
+  private final Vector3 position;
   private final OrientationAxis axis;
 
-  public PortalOrientation(Vector3Int position, OrientationAxis axis) {
+  public PortalOrientation(Vector3 position, OrientationAxis axis) {
     this.position = position;
     this.axis = axis;
   }
 
-  public static PortalOrientation northSouth(Vector3Int position) {
+  public static PortalOrientation northSouth(Vector3 position) {
     return new PortalOrientation(position, OrientationAxis.Z);
   }
 
-  public static PortalOrientation westEast(Vector3Int position) {
+  public static PortalOrientation westEast(Vector3 position) {
     return new PortalOrientation(position, OrientationAxis.X);
   }
 
-  public int mainAxisPos() {
+  public double mainAxisPos() {
     if (axis == OrientationAxis.X) {
       return position.z();
     }
@@ -28,12 +34,44 @@ public class PortalOrientation {
     return position.x();
   }
 
-  public int crossAxisPos() {
+  public double mainAxisPos(Location location) {
+    if (axis == OrientationAxis.X) {
+      return location.getZ();
+    }
+
+    return location.getX();
+  }
+
+  public double mainAxisPos(Region region) {
+    if (axis == OrientationAxis.X) {
+      return region.from().z();
+    }
+
+    return region.from().x();
+  }
+
+  public double crossAxisPos() {
     if (axis == OrientationAxis.X) {
       return position.x();
     }
 
     return position.z();
+  }
+
+  public double crossAxisPos(Location location) {
+    if (axis == OrientationAxis.X) {
+      return location.getX();
+    }
+
+    return location.getZ();
+  }
+
+  public double crossAxisPos(Region region) {
+    if (axis == OrientationAxis.X) {
+      return region.from().x();
+    }
+
+    return region.from().z();
   }
 
   public float getYawTo(PortalOrientation other) {

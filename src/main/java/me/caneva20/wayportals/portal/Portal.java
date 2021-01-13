@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import lombok.Getter;
 import lombok.ToString;
 import me.caneva20.wayportals.utils.Region;
+import me.caneva20.wayportals.utils.Vector2;
 import me.caneva20.wayportals.utils.Vector3Int;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,6 +17,9 @@ public class Portal extends Region {
 
   @Getter
   private PortalOrientation orientation;
+
+  @Getter
+  private final PortalDimensions dimensions;
 
   @Getter
   @ToString.Exclude
@@ -31,6 +35,14 @@ public class Portal extends Region {
     }
 
     updateOrientation();
+
+    if (orientation.axis() == OrientationAxis.X) {
+      dimensions = new PortalDimensions(new Vector2(min.x(), min.y()),
+          new Vector2(max.x(), max.y()));
+    } else {
+      dimensions = new PortalDimensions(new Vector2(min.z(), min.y()),
+          new Vector2(max.z(), max.y()));
+    }
   }
 
   public Portal(Vector3Int min, Vector3Int max, @Nullable String worldName) {
@@ -38,8 +50,8 @@ public class Portal extends Region {
   }
 
   private void updateOrientation() {
-    orientation = from().z() != to().z() ? PortalOrientation.northSouth(from())
-        : PortalOrientation.westEast(from());
+    orientation = from().z() != to().z() ? PortalOrientation.northSouth(from().toVector3())
+        : PortalOrientation.westEast(from().toVector3());
   }
 
   private boolean exists() {
