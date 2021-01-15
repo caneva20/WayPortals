@@ -141,6 +141,14 @@ public class Portal extends Region {
     }
   }
 
+  public PortalDimensions dimensions(boolean inverse) {
+    if (inverse) {
+      return dimensions().inverse();
+    } else {
+      return dimensions();
+    }
+  }
+
   public boolean hasLink() {
     return link != null;
   }

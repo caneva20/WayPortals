@@ -34,4 +34,12 @@ public class PortalDimensions {
 
     return new Vector2(x, y);
   }
+
+
+  /**
+   * @return this dimensions with its min & max x swapped
+   */
+  public PortalDimensions inverse() {
+    return new PortalDimensions(new Vector2(max.x(), min().y()), new Vector2(min.x(), max.y()));
+  }
 }

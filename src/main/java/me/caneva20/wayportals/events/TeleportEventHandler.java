@@ -55,7 +55,16 @@ public class TeleportEventHandler implements Listener {
 
     var fromPos = new Vector2(portal.orientation().crossAxisPos(from), from.getY());
 
-    var target = portal.dimensions().map(fromPos, link.dimensions());
+    boolean inverse = false;
+
+    if (portal.orientation().axis() != link.orientation().axis()) {
+      var a = portal.orientation().mainAxisPos() > link.orientation().crossAxisPos();
+      var b = portal.orientation().crossAxisPos() > link.orientation().mainAxisPos();
+
+      inverse = a == b;
+    }
+
+    var target = portal.dimensions().map(fromPos, link.dimensions(inverse));
     var yaw = portal.orientation().getYawTo(link.orientation());
     var world = plugin.getServer().getWorld(Objects.requireNonNull(link.worldName()));
 
