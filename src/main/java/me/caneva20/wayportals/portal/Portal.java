@@ -2,7 +2,9 @@ package me.caneva20.wayportals.portal;
 
 import co.aikar.idb.DB;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.Getter;
 import lombok.ToString;
 import me.caneva20.wayportals.utils.Region;
@@ -26,11 +28,11 @@ public class Portal extends Region {
   @ToString.Exclude
   private Portal link;
 
-  private Portal(Vector3Int min, Vector3Int max, @Nullable String worldName, boolean loadLInk) {
+  public Portal(Vector3Int min, Vector3Int max, @Nullable String worldName) {
     super(min, max, worldName);
 
     if (exists()) {
-      load(loadLInk);
+      load();
     } else {
       create();
     }
@@ -44,10 +46,6 @@ public class Portal extends Region {
       dimensions = new PortalDimensions(new Vector2(min.z(), min.y()),
           new Vector2(max.z(), max.y()));
     }
-  }
-
-  public Portal(Vector3Int min, Vector3Int max, @Nullable String worldName) {
-    this(min, max, worldName, true);
   }
 
   private void updateOrientation() {
@@ -69,7 +67,7 @@ public class Portal extends Region {
     }
   }
 
-  private void load(boolean loadLink) {
+  private void load() {
     try {
       var row = DB.getFirstRow(
           "SELECT id, linked_portal_id FROM portals WHERE world = ? AND min_x = ? AND min_y = ? AND min_z = ? AND max_x = ? AND max_y = ? AND max_z = ? LIMIT 1",
@@ -77,11 +75,19 @@ public class Portal extends Region {
 
       this.id = row.getInt("id");
 
-      if (loadLink) {
-        var linkedPortalId = (Number) row.get("linked_portal_id");
+      Pool.add(this);
 
-        if (linkedPortalId != null) {
-          link = find(linkedPortalId.intValue(), false);
+      var linkedPortalId = (Number) row.get("linked_portal_id");
+
+      if (linkedPortalId != null) {
+        link = Pool.find(linkedPortalId.longValue());
+
+        if (link == null) {
+          link = find(linkedPortalId.longValue());
+        }
+
+        if (link != null) {
+          link.link(this);
         }
       }
     } catch (SQLException ex) {
@@ -94,6 +100,8 @@ public class Portal extends Region {
       this.id = DB.executeInsert(
           "INSERT INTO portals(world, min_x, min_y, min_z, max_x, max_y, max_z) VALUES(?, ?, ?, ?, ?, ?, ?)",
           worldName(), from().x(), from().y(), from().z(), to().x(), to().y(), to().z());
+
+      Pool.add(this);
     } catch (SQLException ex) {
       ex.printStackTrace();
     }
@@ -123,24 +131,35 @@ public class Portal extends Region {
     }
   }
 
-  private void link(@Nullable Portal portal, boolean updateOther) {
-    if (hasLink()) {
-      link.link(null, false);
-    }
-
+  public void link(@Nullable Portal portal) {
     if (portal == null) {
       setLinkId(null);
-    } else {
-      setLinkId(portal.id());
-      link = portal;
 
-      if (updateOther) {
-        portal.link(this, false);
-      }
+      link = null;
+      return;
     }
+
+    if (link != null && (link == portal || link.id() == portal.id())) {
+      return;
+    }
+
+    if (hasLink()) {
+      link.link(null);
+    }
+
+    link = portal;
+    setLinkId(portal.id());
+
+    portal.link(this);
+  }
+
+  public boolean hasLink() {
+    return link != null;
   }
 
   public void delete() {
+    Pool.remove(this);
+
     try {
       DB.executeUpdate("DELETE FROM portals WHERE id = ?", id);
     } catch (SQLException ex) {
@@ -166,15 +185,7 @@ public class Portal extends Region {
     }
   }
 
-  public boolean hasLink() {
-    return link != null;
-  }
-
-  public void link(@Nullable Portal portal) {
-    link(portal, true);
-  }
-
-  private static @Nullable Portal find(long id, boolean loadLink) {
+  public static @Nullable Portal find(long id) {
     try {
       var row = DB.getFirstRow("SELECT * FROM portals WHERE id = ? LIMIT 1", id);
 
@@ -190,15 +201,27 @@ public class Portal extends Region {
       var maxY = row.getInt("max_y");
       var maxZ = row.getInt("max_z");
 
-      return new Portal(new Vector3Int(minX, minY, minZ), new Vector3Int(maxX, maxY, maxZ), world,
-          loadLink);
+      return new Portal(new Vector3Int(minX, minY, minZ), new Vector3Int(maxX, maxY, maxZ), world);
     } catch (SQLException ex) {
       ex.printStackTrace();
       return null;
     }
   }
+}
 
-  public static @Nullable Portal find(long id) {
-    return find(id, true);
+class Pool {
+
+  private static final Set<Portal> pool = new HashSet<>();
+
+  static void add(Portal portal) {
+    pool.add(portal);
+  }
+
+  static void remove(Portal portal) {
+    pool.remove(portal);
+  }
+
+  static @Nullable Portal find(long id) {
+    return pool.stream().filter(x -> x.id() == id).findFirst().orElse(null);
   }
 }
