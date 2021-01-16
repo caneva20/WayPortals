@@ -2,6 +2,7 @@ package me.caneva20.wayportals.portal;
 
 import co.aikar.idb.DB;
 import java.sql.SQLException;
+import java.util.List;
 import lombok.Getter;
 import lombok.ToString;
 import me.caneva20.wayportals.utils.Region;
@@ -93,6 +94,22 @@ public class Portal extends Region {
       this.id = DB.executeInsert(
           "INSERT INTO portals(world, min_x, min_y, min_z, max_x, max_y, max_z) VALUES(?, ?, ?, ?, ?, ?, ?)",
           worldName(), from().x(), from().y(), from().z(), to().x(), to().y(), to().z());
+    } catch (SQLException ex) {
+      ex.printStackTrace();
+    }
+
+    deleteOverlapping();
+  }
+
+  private void deleteOverlapping() {
+    try {
+      List<Integer> results = DB.getFirstColumnResults(
+          "SELECT id from portals WHERE ? = world AND ? <= max_x AND ? >= min_x AND ? <= max_y AND ? >= min_y AND ? <= max_z AND ? >= min_z AND id != ?",
+          worldName(), from().x(), to().x(), from().y(), to().y(), from().z(), to().z(), id());
+
+      for (Integer id : results) {
+        DB.executeUpdate("DELETE FROM portals WHERE id = ?", id);
+      }
     } catch (SQLException ex) {
       ex.printStackTrace();
     }
