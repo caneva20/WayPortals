@@ -34,13 +34,14 @@ dependencies {
     implementation("co.aikar:idb-core:1.0.0-SNAPSHOT")
     implementation("com.zaxxer:HikariCP:3.4.5")
     implementation("org.xerial:sqlite-jdbc:3.34.0")
-    implementation("com.google.inject:guice:4.2.3")
+    implementation("com.google.dagger:dagger:2.31")
 
     compileOnly("org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT")
     compileOnly("me.caneva20:c20core:1.1.0")
     compileOnly("com.google.auto.factory:auto-factory:1.0-beta8")
 
     annotationProcessor("com.google.auto.factory:auto-factory:1.0-beta8")
+    annotationProcessor("com.google.dagger:dagger-compiler:2.31")
 }
 
 val group = "me.caneva20"

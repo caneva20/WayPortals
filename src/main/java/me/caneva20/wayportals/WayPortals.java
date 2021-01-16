@@ -1,49 +1,34 @@
 package me.caneva20.wayportals;
 
-import co.aikar.commands.PaperCommandManager;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import me.caneva20.messagedispatcher.dispachers.IConsoleMessageDispatcher;
-import me.caneva20.wayportals.commands.WayPortalsCommand;
-import me.caneva20.wayportals.events.BindingEventHandler;
-import me.caneva20.wayportals.events.InteractionEventHandler;
-import me.caneva20.wayportals.events.TeleportEventHandler;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+@Singleton
 public final class WayPortals extends JavaPlugin {
 
   @Inject
-  private IConsoleMessageDispatcher dispatcher;
+  public IConsoleMessageDispatcher dispatcher;
 
   @Inject
-  private InteractionEventHandler interactionEventHandler;
+  public PluginManager pluginManager;
 
-  @Inject
-  private BindingEventHandler bindingEventHandler;
-
-  @Inject
-  private TeleportEventHandler teleportEventHandler;
-
-  @Inject
-  private PaperCommandManager commandManager;
-
-  @Inject
-  private PluginManager pluginManager;
-
-  @Inject
   DatabaseHandler database;
 
   @Override
   public void onEnable() {
-    var injector = new BinderModule(this).createInjector();
+    var component = DaggerPluginComponent.builder().pluginModule(new PluginModule(this)).build();
 
-    injector.injectMembers(this);
+    component.inject(this);
+    database = component.getDatabaseHandler();
 
-    commandManager.registerCommand(injector.getInstance(WayPortalsCommand.class));
+    component.getCommandManager().registerCommand(component.getWayPortalsCommand());
 
-    pluginManager.registerEvents(interactionEventHandler, this);
-    pluginManager.registerEvents(bindingEventHandler, this);
-    pluginManager.registerEvents(teleportEventHandler, this);
+    pluginManager.registerEvents(component.getInteractionEventHandler(), this);
+    pluginManager.registerEvents(component.getBindingEventHandler(), this);
+    pluginManager.registerEvents(component.getTeleportEventHandler(), this);
 
     database.initialize();
 
