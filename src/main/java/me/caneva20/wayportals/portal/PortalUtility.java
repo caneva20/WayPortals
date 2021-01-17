@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 import me.caneva20.wayportals.utils.Vector3;
 import me.caneva20.wayportals.utils.Vector3Int;
-import me.caneva20.wayportals.utils.VeinUtility;
+import me.caneva20.wayportals.utils.BlockSearchUtility;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.jetbrains.annotations.Nullable;
@@ -19,7 +19,7 @@ public class PortalUtility {
       return null;
     }
 
-    var veinBlocks = VeinUtility.getVein(portalBlock, 441, false);
+    var veinBlocks = BlockSearchUtility.getVein(portalBlock, 441, false);
 
     var vein = veinBlocks.stream()
         .map(x -> new Vector3(x.getX(), x.getY(), x.getZ()))

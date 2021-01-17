@@ -6,7 +6,7 @@ import org.bukkit.block.BlockFace;
 import java.util.HashSet;
 import java.util.Set;
 
-public class VeinUtility {
+public class BlockSearchUtility {
 
   private static final Set<Block> buffer = new HashSet<>();
   private static final Set<Block> recent = new HashSet<>();
@@ -14,7 +14,7 @@ public class VeinUtility {
   private static final BlockFace[] blockFaces = {BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH,
       BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST};
 
-  private VeinUtility() {
+  private BlockSearchUtility() {
   }
 
   public static Set<Block> getVein(Block start, int max, boolean matchData) {
