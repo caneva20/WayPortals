@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import me.caneva20.messagedispatcher.dispachers.IConsoleMessageDispatcher;
 import me.caneva20.wayportals.KeyProvider;
 import me.caneva20.wayportals.WayPortals;
+import me.caneva20.wayportals.portal.IPortalManager;
 import me.caneva20.wayportals.portal.Portal;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -29,13 +30,10 @@ public class PortalBinder implements IPortalBinder {
   private Portal portal;
 
   @Inject
-  PortalBinder(
-      @Provided WayPortals plugin,
-      @Provided KeyProvider keys,
+  PortalBinder(@Provided WayPortals plugin, @Provided KeyProvider keys,
       @Provided PortalBinderUtility binderUtility,
-      @Provided IConsoleMessageDispatcher consoleDispatcher,
-      ItemStack stack
-  ) {
+      @Provided IConsoleMessageDispatcher consoleDispatcher, @Provided IPortalManager portalManager,
+      ItemStack stack) {
     this.plugin = plugin;
     this.keys = keys;
     this.consoleDispatcher = consoleDispatcher;
@@ -49,7 +47,9 @@ public class PortalBinder implements IPortalBinder {
       var portalId = getPortalId();
 
       if (portalId != null) {
-        portal = Portal.find(portalId);
+        //TODO: Change portal id to int
+
+        portal = portalManager.find(portalId.intValue());
       }
     }
   }

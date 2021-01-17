@@ -2,6 +2,7 @@ package me.caneva20.wayportals.portal;
 
 import java.util.Collections;
 import java.util.stream.Collectors;
+import me.caneva20.wayportals.utils.Region;
 import me.caneva20.wayportals.utils.Vector3;
 import me.caneva20.wayportals.utils.Vector3Int;
 import me.caneva20.wayportals.utils.BlockSearchUtility;
@@ -10,19 +11,18 @@ import org.bukkit.block.Block;
 import org.jetbrains.annotations.Nullable;
 
 public class PortalUtility {
+
   private PortalUtility() {
   }
 
-  @Nullable
-  public static Portal find(Block portalBlock) {
+  public static @Nullable Region find(Block portalBlock) {
     if (portalBlock.getType() != Material.NETHER_PORTAL) {
       return null;
     }
 
     var veinBlocks = BlockSearchUtility.getVein(portalBlock, 441, false);
 
-    var vein = veinBlocks.stream()
-        .map(x -> new Vector3(x.getX(), x.getY(), x.getZ()))
+    var vein = veinBlocks.stream().map(x -> new Vector3(x.getX(), x.getY(), x.getZ()))
         .collect(Collectors.toList());
 
     var xs = vein.stream().map(Vector3::x).collect(Collectors.toList());
@@ -37,7 +37,7 @@ public class PortalUtility {
     var maxY = Collections.max(ys);
     var maxZ = Collections.max(zs);
 
-    return new Portal(new Vector3Int(minX, minY, minZ), new Vector3Int(maxX, maxY, maxZ),
+    return new Region(new Vector3Int(minX, minY, minZ), new Vector3Int(maxX, maxY, maxZ),
         portalBlock.getWorld().getName());
   }
 }

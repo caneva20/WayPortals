@@ -3,9 +3,9 @@ package me.caneva20.wayportals.events;
 import java.util.Objects;
 import javax.inject.Inject;
 import me.caneva20.paperlib.PaperLib;
+import me.caneva20.wayportals.portal.IPortalManager;
 import me.caneva20.wayportals.portal.OrientationAxis;
 import me.caneva20.wayportals.portal.Portal;
-import me.caneva20.wayportals.portal.PortalUtility;
 import me.caneva20.wayportals.utils.Vector2;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -24,10 +24,12 @@ public class TeleportEventHandler implements Listener {
       BlockFace.EAST, BlockFace.WEST};
 
   private final JavaPlugin plugin;
+  private final IPortalManager portalManager;
 
   @Inject
-  TeleportEventHandler(JavaPlugin plugin) {
+  TeleportEventHandler(JavaPlugin plugin, IPortalManager portalManager) {
     this.plugin = plugin;
+    this.portalManager = portalManager;
   }
 
   private @Nullable Portal findPortal(Block block) {
@@ -47,7 +49,7 @@ public class TeleportEventHandler implements Listener {
       return null;
     }
 
-    return PortalUtility.find(portalBlock);
+    return portalManager.get(portalBlock.getLocation());
   }
 
   private Location getDestination(Portal portal, Location from) {
@@ -87,16 +89,16 @@ public class TeleportEventHandler implements Listener {
     var world = plugin.getServer().getWorld(link.worldName());
 
     if (world == null) {
-      link.delete();
+      portalManager.delete(link);
       return false;
     }
 
     var from = link.from();
 
-    var destPortal = PortalUtility.find(world.getBlockAt(from.x(), from.y(), from.z()));
+    var destPortal = portalManager.get(new Location(world, from.x(), from.y(), from.z()));
 
     if (destPortal == null || destPortal.id() != link.id()) {
-      link.delete();
+      portalManager.delete(link);
 
       return false;
     }

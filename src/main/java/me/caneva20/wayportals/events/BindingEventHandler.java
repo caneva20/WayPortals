@@ -4,8 +4,8 @@ import com.google.common.base.Stopwatch;
 import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import me.caneva20.messagedispatcher.dispachers.IMessageDispatcher;
+import me.caneva20.wayportals.portal.IPortalManager;
 import me.caneva20.wayportals.portal.Portal;
-import me.caneva20.wayportals.portal.PortalUtility;
 import me.caneva20.wayportals.portalbinder.PortalBinder;
 import me.caneva20.wayportals.portalbinder.PortalBinderFactory;
 import me.caneva20.wayportals.portalbinder.PortalBinderUtility;
@@ -25,15 +25,15 @@ public class BindingEventHandler implements Listener {
   private final IMessageDispatcher dispatcher;
   private final PortalBinderFactory binderFactory;
   private final PortalBinderUtility binderUtility;
+  private final IPortalManager portalManager;
 
   @Inject
-  BindingEventHandler(
-      IMessageDispatcher dispatcher,
-      PortalBinderFactory binderFactory,
-      PortalBinderUtility binderUtility) {
+  BindingEventHandler(IMessageDispatcher dispatcher, PortalBinderFactory binderFactory,
+      PortalBinderUtility binderUtility, IPortalManager portalManager) {
     this.dispatcher = dispatcher;
     this.binderFactory = binderFactory;
     this.binderUtility = binderUtility;
+    this.portalManager = portalManager;
   }
 
   private void bindTarget(Player player, PortalBinder binder, @NotNull Portal portal) {
@@ -45,7 +45,7 @@ public class BindingEventHandler implements Listener {
     player.getInventory().remove(binder.getStack());
 
     if (binder.hasPortal()) {
-      portal.link(binder.getPortal());
+      portalManager.link(portal, binder.getPortal());
     }
 
     dispatcher.debug(player, portal.toString());
@@ -54,7 +54,7 @@ public class BindingEventHandler implements Listener {
 
   private @Nullable Portal findPortal(Block portalBlock, Player player) {
     var stopwatch = Stopwatch.createStarted();
-    var portal = PortalUtility.find(portalBlock);
+    var portal = portalManager.get(portalBlock.getLocation());
 
     stopwatch.stop();
 

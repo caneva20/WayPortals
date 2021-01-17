@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import me.caneva20.messagedispatcher.dispachers.IConsoleMessageDispatcher;
+import me.caneva20.wayportals.portal.db.IPortalDatabase;
 import org.bukkit.plugin.java.JavaPlugin;
 
 @Singleton
@@ -14,12 +15,14 @@ public class DatabaseHandler {
 
   private final JavaPlugin plugin;
   private final IConsoleMessageDispatcher dispatcher;
+  private final IPortalDatabase portalDatabase;
 
   @Inject
-  DatabaseHandler(JavaPlugin plugin,
-      IConsoleMessageDispatcher dispatcher) {
+  DatabaseHandler(JavaPlugin plugin, IConsoleMessageDispatcher dispatcher,
+      IPortalDatabase portalDatabase) {
     this.plugin = plugin;
     this.dispatcher = dispatcher;
+    this.portalDatabase = portalDatabase;
   }
 
   public void initialize() {
@@ -43,13 +46,7 @@ public class DatabaseHandler {
   }
 
   private void createDatabase() {
-    try {
-      DB.executeUpdate("CREATE TABLE IF NOT EXISTS 'portals' ('id' INTEGER NOT NULL, 'linked_portal_id' INTEGER, 'world' TEXT NOT NULL DEFAULT '', 'min_x' INTEGER NOT NULL DEFAULT 0, 'min_y' INTEGER NOT NULL DEFAULT 0, 'min_z' INTEGER NOT NULL DEFAULT 0, 'max_x' INTEGER NOT NULL DEFAULT 0, 'max_y' INTEGER NOT NULL DEFAULT 0, 'max_z' INTEGER NOT NULL DEFAULT 0, PRIMARY KEY('id' AUTOINCREMENT), FOREIGN KEY('linked_portal_id') REFERENCES 'portals'('id'))");
-      DB.executeUpdate("CREATE INDEX IF NOT EXISTS 'portal_id' ON 'portals'('id')");
-    } catch (SQLException ex) {
-      ex.printStackTrace();
-    }
-
+    portalDatabase.initialize();
     dispatcher.success("Database created!");
   }
 }

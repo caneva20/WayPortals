@@ -12,6 +12,7 @@ import me.caneva20.wayportals.commands.WayPortalsCommand;
 import me.caneva20.wayportals.events.BindingEventHandler;
 import me.caneva20.wayportals.events.InteractionEventHandler;
 import me.caneva20.wayportals.events.TeleportEventHandler;
+import me.caneva20.wayportals.portal.PortalModule;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -62,7 +63,7 @@ public class PluginModule {
 }
 
 @Singleton
-@Component(modules = {PluginModule.class})
+@Component(modules = {PluginModule.class, PortalModule.class})
 interface PluginComponent {
 
   //Plugin instances
