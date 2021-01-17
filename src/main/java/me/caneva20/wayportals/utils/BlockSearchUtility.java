@@ -1,5 +1,6 @@
 package me.caneva20.wayportals.utils;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
@@ -57,11 +58,41 @@ public class BlockSearchUtility {
     return blocks;
   }
 
+  public static Set<Block> findNeighbours(Block block, Material type) {
+    var blocks = new HashSet<Block>();
+
+    for (BlockFace face : blockFaces) {
+      var relative = block.getRelative(face);
+
+      if (relative.getType() == type) {
+        blocks.add(relative);
+      }
+    }
+
+    return blocks;
+  }
+
+  public static Set<Block> findNeighbours(Block block) {
+    var blocks = new HashSet<Block>();
+
+    for (BlockFace face : blockFaces) {
+      blocks.add(block.getRelative(face));
+    }
+
+    return blocks;
+  }
+
+  public static Set<Block> findNeighbours(Block block, boolean matchType) {
+    if (matchType) {
+      return findNeighbours(block, block.getType());
+    } else {
+      return findNeighbours(block);
+    }
+  }
+
   private static boolean match(Block a, Block b, boolean matchData) {
     if (matchData) {
-      return a.getType() == b.getType() && a.getState()
-          .getData()
-          .equals(b.getState().getData());
+      return a.getType() == b.getType() && a.getState().getData().equals(b.getState().getData());
     }
 
     return a.getType() == b.getType();
