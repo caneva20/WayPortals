@@ -77,6 +77,33 @@ public class TeleportEventHandler implements Listener {
         from.getYaw() + yaw, from.getPitch());
   }
 
+  private boolean hasValidLink(Portal portal) {
+    if (!portal.hasLink()) {
+      return false;
+    }
+
+    var link = portal.link();
+
+    var world = plugin.getServer().getWorld(link.worldName());
+
+    if (world == null) {
+      link.delete();
+      return false;
+    }
+
+    var from = link.from();
+
+    var destPortal = PortalUtility.find(world.getBlockAt(from.x(), from.y(), from.z()));
+
+    if (destPortal == null || destPortal.id() != link.id()) {
+      link.delete();
+
+      return false;
+    }
+
+    return true;
+  }
+
   @EventHandler
   private void onPortalTeleport(PlayerPortalEvent event) {
     if (event.getCause() != TeleportCause.NETHER_PORTAL) {
@@ -86,7 +113,7 @@ public class TeleportEventHandler implements Listener {
     var player = event.getPlayer();
     var portal = findPortal(event.getFrom().getBlock());
 
-    if (portal == null || !portal.hasLink()) {
+    if (portal == null || !hasValidLink(portal)) {
       return;
     }
 

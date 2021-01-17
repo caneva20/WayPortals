@@ -160,6 +160,9 @@ public class Portal extends Region {
   public void delete() {
     Pool.remove(this);
 
+    link.link(null);
+    link(null);
+
     try {
       DB.executeUpdate("DELETE FROM portals WHERE id = ?", id);
     } catch (SQLException ex) {
