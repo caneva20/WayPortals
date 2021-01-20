@@ -14,6 +14,7 @@ repositories {
     mavenLocal()
     maven { url = uri("https://repo.maven.apache.org/maven2/") }
     maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
+    maven { url = uri("https://papermc.io/repo/repository/maven-public/") }
     maven { url = uri("https://repo.aikar.co/content/groups/aikar/") }
     maven { url = uri("https://jitpack.io") }
 }
@@ -24,6 +25,7 @@ dependencies {
     implementation("com.zaxxer:HikariCP:3.4.5")
     implementation("org.xerial:sqlite-jdbc:3.34.0")
     implementation("com.google.dagger:dagger:2.31")
+    implementation("io.papermc:paperlib:1.0.6")
 
     compileOnly("org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT")
     compileOnly("me.caneva20:C20core:1.1.7")
@@ -90,6 +92,7 @@ tasks.shadowJar {
     relocate("co.aikar.commands", "me.caneva20.wayportals.acf")
     relocate("co.aikar.idb", "me.caneva20.wayportals.idb")
     relocate("co.aikar.locales", "me.caneva20.wayportals.acf-locales")
+    relocate("io.papermc.lib", "me.caneva20.wayportals.paperlib")
 
     if (minimizeJar) {
         minimize()
