@@ -48,15 +48,13 @@ public class TeleportEventHandler implements Listener {
 
   @Nullable
   private Location getDestination(Portal portal, Location from) {
-    var yaw = portal.orientation().getYawTo(portal.link().orientation());
-
     val loc = portal.getDestination(new WorldVector3(from));
 
     if (loc == null) {
       return null;
     }
 
-    loc.setYaw(from.getYaw() + yaw);
+    loc.setYaw(from.getYaw() + portal.getLinkYaw());
     loc.setPitch(from.getPitch());
 
     return loc;

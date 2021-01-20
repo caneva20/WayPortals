@@ -67,6 +67,22 @@ public class Portal {
     return new Location(world, pos.x(), pos.y(), pos.z());
   }
 
+  public float getLinkYaw() {
+    if (link == null) {
+      return 0;
+    }
+
+    if (orientation.axis() == link.orientation.axis()) {
+      return 0;
+    }
+
+    var dirX = location.x() > link.location.x() ? 1 : -1;
+    var dirZ = location.z() > link.location.z() ? -1 : 1;
+    var axisF = orientation.axis() == OrientationAxis.X ? 1 : -1;
+
+    return 90 * dirZ * dirX * axisF;
+  }
+
   private boolean inverse() {
     Objects.requireNonNull(link);
 
