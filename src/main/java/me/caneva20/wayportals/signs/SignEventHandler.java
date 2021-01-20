@@ -1,4 +1,4 @@
-package me.caneva20.wayportals.events;
+package me.caneva20.wayportals.signs;
 
 import java.util.Set;
 import javax.inject.Inject;
@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import me.caneva20.messagedispatcher.dispachers.IMessageDispatcher;
 import me.caneva20.wayportals.portal.Portal;
 import me.caneva20.wayportals.portal.PortalManager;
-import me.caneva20.wayportals.signs.SignManager;
 import me.caneva20.wayportals.utils.BlockSearchUtility;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
