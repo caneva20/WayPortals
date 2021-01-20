@@ -61,11 +61,11 @@ public class TeleportEventHandler implements Listener {
   }
 
   private boolean hasValidLink(Portal portal) {
-    if (!portal.hasLink()) {
+    var link = portal.link();
+
+    if (link == null) {
       return false;
     }
-
-    var link = portal.link();
 
     var world = Bukkit.getServer().getWorld(link.location().world());
 
