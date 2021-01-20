@@ -2,6 +2,7 @@ package me.caneva20.wayportals.portal.db;
 
 
 import lombok.Data;
+import me.caneva20.wayportals.utils.WorldVector3;
 import org.jetbrains.annotations.Nullable;
 
 @Data
@@ -18,4 +19,8 @@ public class PortalRecord {
   private final int maxZ;
 
   private final @Nullable Integer linkedPortalId;
+
+  public WorldVector3 location() {
+    return new WorldVector3(minX, minY, minZ, world);
+  }
 }
