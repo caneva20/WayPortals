@@ -1,5 +1,5 @@
 package me.caneva20.wayportals.portal;
 
-public enum OrientationAxis {
+public enum PortalAxis {
   X, Z
 }
