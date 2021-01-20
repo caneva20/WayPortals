@@ -19,7 +19,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
-@RequiredArgsConstructor(onConstructor_ = {@Inject})
+@RequiredArgsConstructor(onConstructor = @__({@Inject}))
 public class SignEventHandler implements Listener {
 
   private static final Set<Material> SIGNS = Set

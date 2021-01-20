@@ -12,7 +12,7 @@ import org.bukkit.block.Sign;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@RequiredArgsConstructor(onConstructor_ = {@Inject})
+@RequiredArgsConstructor(onConstructor = @__({@Inject}))
 public class SignManager implements ISignManager {
 
   private final ISignDatabase db;
