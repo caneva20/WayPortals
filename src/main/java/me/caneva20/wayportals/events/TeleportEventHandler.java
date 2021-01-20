@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import me.caneva20.wayportals.portal.IPortalManager;
 import me.caneva20.wayportals.portal.Portal;
-import me.caneva20.wayportals.utils.WorldVector3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -44,20 +43,6 @@ public class TeleportEventHandler implements Listener {
     }
 
     return portalManager.get(portalBlock.getLocation());
-  }
-
-  @Nullable
-  private Location getDestination(Portal portal, Location from) {
-    val loc = portal.getDestination(new WorldVector3(from));
-
-    if (loc == null) {
-      return null;
-    }
-
-    loc.setYaw(from.getYaw() + portal.getLinkYaw());
-    loc.setPitch(from.getPitch());
-
-    return loc;
   }
 
   private boolean hasValidLink(Portal portal) {
@@ -103,7 +88,7 @@ public class TeleportEventHandler implements Listener {
     }
 
     event.setCancelled(true);
-    var destination = getDestination(portal, event.getFrom());
+    var destination = portal.getDestination(event.getFrom());
 
     if (destination != null) {
       PaperLib.teleportAsync(player, destination, TeleportCause.PLUGIN);

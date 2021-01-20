@@ -44,12 +44,14 @@ public class Portal {
   }
 
   @Nullable
-  public Location getDestination(Vector3 playerLocation) {
+  public Location getDestination(Location playerPosition) {
+    final var playerVPos = new WorldVector3(playerPosition);
+
     if (link == null) {
       return null;
     }
 
-    var relativePos = playerLocation.subtract(location);
+    var relativePos = playerVPos.subtract(location);
 
     if (inverse()) {
       relativePos = size.subtract(relativePos.x(), size.y() - relativePos.y(), relativePos.z());
@@ -65,10 +67,11 @@ public class Portal {
 
     var world = Bukkit.getServer().getWorld(link.location().world());
 
-    return new Location(world, pos.x(), pos.y(), pos.z());
+    return new Location(world, pos.x(), pos.y(), pos.z(), playerPosition.getYaw() + getLinkYaw(),
+        playerPosition.getPitch());
   }
 
-  public float getLinkYaw() {
+  private float getLinkYaw() {
     if (link == null) {
       return 0;
     }
