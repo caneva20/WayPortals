@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public class Portal {
 
   private final long id;
-  private final PortalOrientation orientation;
+  private final OrientationAxis axis;
   private final WorldVector3 location;
   private final int width;
   private final int height;
@@ -25,9 +25,8 @@ public class Portal {
   @ToString.Exclude
   @Nullable Portal link;
 
-  Portal(long id, WorldVector3 min, WorldVector3 max, PortalOrientation orientation) {
+  Portal(long id, WorldVector3 min, WorldVector3 max) {
     this.id = id;
-    this.orientation = orientation;
 
     this.height = (int) (max.y() - min.y());
     this.width = (int) (max.x() - min.x());
@@ -36,6 +35,7 @@ public class Portal {
     this.location = min;
 
     this.size = new Vector3(width, height, depth).add(Vector3.one);
+    this.axis = min.x() == max.x() ? OrientationAxis.Z : OrientationAxis.X;
   }
 
   public boolean hasLink() {
@@ -56,7 +56,7 @@ public class Portal {
 
     var pos = relativePos.divide(size);
 
-    if (orientation.axis() != link.orientation.axis()) {
+    if (axis != link.axis) {
       pos = new Vector3(pos.z(), pos.y(), pos.x());
     }
 
@@ -72,13 +72,13 @@ public class Portal {
       return 0;
     }
 
-    if (orientation.axis() == link.orientation.axis()) {
+    if (axis == link.axis) {
       return 0;
     }
 
     var dirX = location.x() > link.location.x() ? 1 : -1;
     var dirZ = location.z() > link.location.z() ? -1 : 1;
-    var axisF = orientation.axis() == OrientationAxis.X ? 1 : -1;
+    var axisF = axis == OrientationAxis.X ? 1 : -1;
 
     return 90 * dirZ * dirX * axisF;
   }
@@ -86,9 +86,9 @@ public class Portal {
   private boolean inverse() {
     Objects.requireNonNull(link);
 
-    if (orientation().axis() != link.orientation().axis()) {
-      var a = orientation().mainAxisPos() > link.orientation().crossAxisPos();
-      var b = orientation().crossAxisPos() > link.orientation().mainAxisPos();
+    if (axis != link.axis) {
+      var a = location.x() > link.location.x();
+      var b = location.z() > link.location.z();
 
       return a == b;
     }

@@ -12,7 +12,6 @@ import me.caneva20.wayportals.portal.events.PortalCreateEvent;
 import me.caneva20.wayportals.portal.events.PortalDeleteEvent;
 import me.caneva20.wayportals.portal.events.PortalLinkEvent;
 import me.caneva20.wayportals.portal.events.PortalUnlinkEvent;
-import me.caneva20.wayportals.utils.Vector3;
 import me.caneva20.wayportals.utils.WorldVector3;
 import org.bukkit.Location;
 import org.bukkit.plugin.PluginManager;
@@ -117,20 +116,11 @@ public class PortalManager implements IPortalManager {
     link(dst, src);
   }
 
-  private PortalOrientation getOrientation(PortalRecord record) {
-    var pos = new Vector3(record.minX(), record.minY(), record.minZ());
-
-    return record.minZ() != record.maxZ() ? PortalOrientation.northSouth(pos)
-        : PortalOrientation.westEast(pos);
-  }
-
   private Portal create(@NotNull PortalRecord record) {
-    val orientation = getOrientation(record);
-
     val min = new WorldVector3(record.minX(), record.minY(), record.minZ(), record.world());
     val max = new WorldVector3(record.maxX(), record.maxY(), record.maxZ(), record.world());
 
-    var portal = new Portal(record.id(), min, max, orientation);
+    var portal = new Portal(record.id(), min, max);
 
     Pool.add(portal);
 
