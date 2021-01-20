@@ -12,21 +12,10 @@ plugins {
 
 repositories {
     mavenLocal()
-    maven {
-        url = uri("https://repo.maven.apache.org/maven2/")
-    }
-
-    maven {
-        url = uri("https://maven.pkg.github.com/caneva20/ConfigAPI")
-    }
-
-    maven {
-        url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    }
-
-    maven {
-        url = uri("https://repo.aikar.co/content/groups/aikar/")
-    }
+    maven { url = uri("https://repo.maven.apache.org/maven2/") }
+    maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
+    maven { url = uri("https://repo.aikar.co/content/groups/aikar/") }
+    maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
@@ -37,7 +26,7 @@ dependencies {
     implementation("com.google.dagger:dagger:2.31")
 
     compileOnly("org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT")
-    compileOnly("me.caneva20:c20core:1.1.0")
+    compileOnly("me.caneva20:C20core:1.1.7")
     compileOnly("com.google.auto.factory:auto-factory:1.0-beta8")
 
     annotationProcessor("com.google.auto.factory:auto-factory:1.0-beta8")
