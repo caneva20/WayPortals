@@ -42,13 +42,13 @@ public class PluginModule {
   @Provides
   @Singleton
   IConsoleMessageDispatcher provideConsoleMessageDispatcher() {
-    return Messaging.createConsoleDispatcher(plugin, true);
+    return Messaging.createConsoleDispatcher(plugin);
   }
 
   @Provides
   @Singleton
   IMessageDispatcher provideMessageDispatcher() {
-    return Messaging.createDispatcher(plugin, true);
+    return Messaging.createDispatcher(plugin);
   }
 
   @Provides
