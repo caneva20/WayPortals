@@ -111,21 +111,13 @@ public class PortalManager implements IPortalManager {
         : PortalOrientation.westEast(pos);
   }
 
-  private PortalDimensions getDimensions(PortalOrientation orientation, PortalRecord record) {
-    val minY = record.minY();
-    val maxY = record.maxY();
-
-    val minX = orientation.axis() == OrientationAxis.X ? record.minX() : record.minZ();
-    val maxX = orientation.axis() == OrientationAxis.X ? record.maxX() : record.maxZ();
-
-    return new PortalDimensions(new Vector2(minX, minY), new Vector2(maxX, maxY));
-  }
-
   private Portal create(@NotNull PortalRecord record) {
     val orientation = getOrientation(record);
-    val dimensions = getDimensions(orientation, record);
 
-    var portal = new Portal(record.id(), orientation, dimensions);
+    val min = new WorldVector3(record.minX(), record.minY(), record.minZ(), record.world());
+    val max = new WorldVector3(record.maxX(), record.maxY(), record.maxZ(), record.world());
+
+    var portal = new Portal(record.id(), min, max, orientation);
 
     Pool.add(portal);
 

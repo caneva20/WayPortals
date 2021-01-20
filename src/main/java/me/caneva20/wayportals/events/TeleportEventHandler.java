@@ -1,12 +1,13 @@
 package me.caneva20.wayportals.events;
 
-import java.util.Objects;
+import io.papermc.lib.PaperLib;
 import javax.inject.Inject;
-import me.caneva20.paperlib.PaperLib;
+import lombok.RequiredArgsConstructor;
+import lombok.val;
 import me.caneva20.wayportals.portal.IPortalManager;
-import me.caneva20.wayportals.portal.OrientationAxis;
 import me.caneva20.wayportals.portal.Portal;
-import me.caneva20.wayportals.utils.Vector2;
+import me.caneva20.wayportals.utils.WorldVector3;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -15,22 +16,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
+@RequiredArgsConstructor(onConstructor = @__({@Inject}))
 public class TeleportEventHandler implements Listener {
 
   private static final BlockFace[] faces = {BlockFace.SELF, BlockFace.NORTH, BlockFace.SOUTH,
       BlockFace.EAST, BlockFace.WEST};
 
-  private final JavaPlugin plugin;
   private final IPortalManager portalManager;
-
-  @Inject
-  TeleportEventHandler(JavaPlugin plugin, IPortalManager portalManager) {
-    this.plugin = plugin;
-    this.portalManager = portalManager;
-  }
 
   private @Nullable Portal findPortal(Block block) {
     Block portalBlock = null;
@@ -52,31 +46,20 @@ public class TeleportEventHandler implements Listener {
     return portalManager.get(portalBlock.getLocation());
   }
 
+  @Nullable
   private Location getDestination(Portal portal, Location from) {
-    var link = portal.link();
+    var yaw = portal.orientation().getYawTo(portal.link().orientation());
 
-    var fromPos = new Vector2(portal.orientation().crossAxisPos(from), from.getY());
+    val loc = portal.getDestination(new WorldVector3(from));
 
-    boolean inverse = false;
-
-    if (portal.orientation().axis() != link.orientation().axis()) {
-      var a = portal.orientation().mainAxisPos() > link.orientation().crossAxisPos();
-      var b = portal.orientation().crossAxisPos() > link.orientation().mainAxisPos();
-
-      inverse = a == b;
+    if (loc == null) {
+      return null;
     }
 
-    var target = portal.dimensions().map(fromPos, link.dimensions(inverse));
-    var yaw = portal.orientation().getYawTo(link.orientation());
-    var world = plugin.getServer().getWorld(Objects.requireNonNull(link.worldName()));
+    loc.setYaw(from.getYaw() + yaw);
+    loc.setPitch(from.getPitch());
 
-    if (link.orientation().axis() == OrientationAxis.Z) {
-      return new Location(world, link.orientation().mainAxisPos(link), target.y(), target.x(),
-          from.getYaw() + yaw, from.getPitch());
-    }
-
-    return new Location(world, target.x(), target.y(), link.orientation().mainAxisPos(link),
-        from.getYaw() + yaw, from.getPitch());
+    return loc;
   }
 
   private boolean hasValidLink(Portal portal) {
@@ -86,16 +69,18 @@ public class TeleportEventHandler implements Listener {
 
     var link = portal.link();
 
-    var world = plugin.getServer().getWorld(link.worldName());
+    var world = Bukkit.getServer().getWorld(link.location().world());
 
     if (world == null) {
       portalManager.delete(link);
       return false;
     }
 
-    var from = link.from();
+    var from = link.location();
 
-    var destPortal = portalManager.get(new Location(world, from.x(), from.y(), from.z()));
+    val location = new Location(world, from.x(), from.y(), from.z());
+
+    var destPortal = portalManager.get(location);
 
     if (destPortal == null || destPortal.id() != link.id()) {
       portalManager.delete(link);
@@ -121,6 +106,9 @@ public class TeleportEventHandler implements Listener {
 
     event.setCancelled(true);
     var destination = getDestination(portal, event.getFrom());
-    PaperLib.teleportAsync(player, destination, TeleportCause.PLUGIN);
+
+    if (destination != null) {
+      PaperLib.teleportAsync(player, destination, TeleportCause.PLUGIN);
+    }
   }
 }
