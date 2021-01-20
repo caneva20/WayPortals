@@ -8,8 +8,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import me.caneva20.wayportals.portal.db.IPortalDatabase;
 import me.caneva20.wayportals.portal.db.PortalRecord;
-import me.caneva20.wayportals.utils.Vector2;
+import me.caneva20.wayportals.portal.events.PortalCreateEvent;
+import me.caneva20.wayportals.portal.events.PortalDeleteEvent;
+import me.caneva20.wayportals.portal.events.PortalLinkEvent;
+import me.caneva20.wayportals.portal.events.PortalUnlinkEvent;
 import me.caneva20.wayportals.utils.Vector3;
+import me.caneva20.wayportals.utils.WorldVector3;
 import org.bukkit.Location;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
@@ -38,12 +42,17 @@ public class PortalManager implements IPortalManager {
     var record = db.find(region);
 
     if (record == null) {
+      val event = new PortalCreateEvent(region);
+      pluginManager.callEvent(event);
+
+      if (event.isCancelled()) {
+        return null;
+      }
+
       record = db.create(region);
     }
 
     if (record == null) {
-      //Portal could not be created
-
       return null;
     }
 
@@ -65,33 +74,47 @@ public class PortalManager implements IPortalManager {
   public void delete(@NotNull Portal portal) {
     Pool.remove(portal);
 
-    link(portal.link, null);
-    link(portal, null);
-
-    db.delete(portal.id());
-  }
-
-  @Override
-  public void link(@NotNull Portal portal, @Nullable Portal target) {
-    if (target == null) {
-      db.setLinkId(portal.id(), null);
-
-      portal.link = null;
-      return;
-    }
-
-    if (portal.link != null && (portal.link == portal || portal.link.id() == portal.id())) {
-      return;
-    }
-
     if (portal.link != null) {
       link(portal.link, null);
     }
 
-    portal.link = portal;
-    db.setLinkId(portal.id(), target.id());
+    link(portal, null);
 
-    link(target, portal);
+    db.delete(portal.id());
+
+    pluginManager.callEvent(new PortalDeleteEvent(portal));
+  }
+
+  @Override
+  public void link(@NotNull Portal src, @Nullable Portal dst) {
+    if (dst == null) {
+      db.setLinkId(src.id(), null);
+
+      src.link = null;
+      return;
+    }
+
+    if (src.link != null && (src.link == dst || src.link.id() == dst.id())) {
+      return;
+    }
+
+    val event = new PortalLinkEvent(src, dst);
+    pluginManager.callEvent(event);
+
+    if (event.isCancelled()) {
+      return;
+    }
+
+    if (src.link != null) {
+      link(src.link, null);
+
+      pluginManager.callEvent(new PortalUnlinkEvent(src, src.link));
+    }
+
+    src.link = dst;
+    db.setLinkId(src.id(), dst.id());
+
+    link(dst, src);
   }
 
   private PortalOrientation getOrientation(PortalRecord record) {
