@@ -36,13 +36,18 @@ public class PortalSign {
   }
 
   private void updateSign() {
-    sign.setLine(0, String.format("ID: %s", portal.id()));
-
     if (portal.hasLink()) {
-      sign.setLine(1, String.format("Link ID: %s", portal.link().id()));
+      sign.setLine(0, String.format("%s -> %s", portal.id(), portal.link().id()));
     } else {
+      sign.setLine(0, portal.id() + "");
       sign.setLine(1, "Not linked");
     }
+
+    sign.setLine(2, portal.location().world());
+
+    sign.setLine(3, String
+        .format("%s, %s, %s", (int) portal.location().x(), (int) portal.location().y(),
+            (int) portal.location().z()));
 
     sign.update();
   }
