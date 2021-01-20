@@ -4,33 +4,23 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import lombok.RequiredArgsConstructor;
 import lombok.val;
 import me.caneva20.wayportals.portal.db.IPortalDatabase;
 import me.caneva20.wayportals.portal.db.PortalRecord;
 import me.caneva20.wayportals.utils.Vector2;
 import me.caneva20.wayportals.utils.Vector3;
 import org.bukkit.Location;
+import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Singleton
+@RequiredArgsConstructor(onConstructor = @__({@Inject}))
 public class PortalManager implements IPortalManager {
-  //load
-  //create
-  //delete
-
-  //events
-  //  onDelete
-  //  onCreate
-  //  onUpdate/onLink
-
 
   private final IPortalDatabase db;
-
-  @Inject
-  PortalManager(IPortalDatabase db) {
-    this.db = db;
-  }
+  private final PluginManager pluginManager;
 
   /**
    * Creates or load a portal at [location]
