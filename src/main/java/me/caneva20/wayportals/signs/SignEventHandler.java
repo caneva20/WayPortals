@@ -5,17 +5,16 @@ import javax.inject.Inject;
 import lombok.CustomLog;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-import me.caneva20.messagedispatcher.dispachers.IMessageDispatcher;
 import me.caneva20.wayportals.portal.Portal;
 import me.caneva20.wayportals.portal.PortalManager;
 import me.caneva20.wayportals.portal.events.PortalLinkedEvent;
 import me.caneva20.wayportals.portal.events.PortalUnlinkEvent;
 import me.caneva20.wayportals.utils.BlockSearchUtility;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.WallSign;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -32,7 +31,6 @@ public class SignEventHandler implements Listener {
           Material.CRIMSON_WALL_SIGN, Material.WARPED_WALL_SIGN);
 
   private final JavaPlugin plugin;
-  private final IMessageDispatcher dispatcher;
   private final PortalManager portalManager;
   private final SignManager signManager;
 
@@ -40,7 +38,7 @@ public class SignEventHandler implements Listener {
     return (Sign) signBlock.getState();
   }
 
-  private @Nullable Portal findPortal(Block signBlock, Player player) {
+  private @Nullable Portal findPortal(Block signBlock) {
     var oppositeFace = ((WallSign) signBlock.getBlockData()).getFacing().getOppositeFace();
 
     var attachedBlock = signBlock.getRelative(oppositeFace);
@@ -48,12 +46,6 @@ public class SignEventHandler implements Listener {
     var neighbours = BlockSearchUtility.findNeighbours(attachedBlock, Material.NETHER_PORTAL);
 
     if (neighbours.size() != 1) {
-      if (neighbours.size() > 1) {
-        dispatcher.debug(player, "More than one portal found!");
-      } else {
-        dispatcher.debug(player, "No portal found");
-      }
-
       return null;
     }
 
@@ -62,15 +54,17 @@ public class SignEventHandler implements Listener {
     return portalManager.get(portalBlock.getLocation());
   }
 
-  private void createSign(Sign sign, Portal portal, Player player) {
+  private void createSignTask(Sign sign, Portal portal) {
     var block = sign.getWorld().getBlockAt(sign.getLocation());
 
     block.setType(sign.getType());
     block.setBlockData(sign.getBlockData());
 
     signManager.create(sign, portal);
+  }
 
-    dispatcher.debug(player, "Sign created!");
+  private void createSign(Sign sign, Portal portal) {
+    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> createSignTask(sign, portal));
   }
 
   @EventHandler
@@ -79,22 +73,23 @@ public class SignEventHandler implements Listener {
       return;
     }
 
-    var player = event.getPlayer();
-    var portal = findPortal(event.getBlock(), player);
+    var portal = findPortal(event.getBlock());
 
-    if (portal != null) {
-      if (signManager.get(portal) != null) {
-        log.info("This portal already have a sign assigned");
-
-        return;
-      }
-
-      event.setCancelled(true);
-      var signBlock = findSign(event.getBlock());
-
-      plugin.getServer().getScheduler()
-          .scheduleSyncDelayedTask(plugin, () -> createSign(signBlock, portal, player));
+    if (portal == null) {
+      return;
     }
+
+    val portalSign = signManager.get(portal);
+
+    if (portalSign != null && !(portalSign.sign().getLocation()
+        .equals(event.getBlock().getLocation()))) {
+      return;
+    }
+
+    event.setCancelled(true);
+    var sign = findSign(event.getBlock());
+
+    createSign(sign, portal);
   }
 
   @EventHandler
