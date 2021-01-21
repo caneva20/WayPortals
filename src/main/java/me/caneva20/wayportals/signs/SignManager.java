@@ -51,6 +51,10 @@ public class SignManager implements ISignManager {
 
   @Override
   public @Nullable PortalSign create(@NotNull Sign sign, @NotNull Portal portal) {
+    if (get(portal) != null) {
+      return null;
+    }
+
     val record = db.create(new WorldVector3(sign.getLocation()), (int) portal.id());
 
     return create(record, sign, portal);
