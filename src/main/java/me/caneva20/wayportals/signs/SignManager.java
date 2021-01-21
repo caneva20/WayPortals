@@ -46,6 +46,8 @@ public class SignManager implements ISignManager {
       return create(record, (Sign) block.getState(), portal);
     }
 
+    db.delete(record.id());
+
     return null;
   }
 
