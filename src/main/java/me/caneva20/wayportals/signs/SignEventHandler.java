@@ -2,10 +2,14 @@ package me.caneva20.wayportals.signs;
 
 import java.util.Set;
 import javax.inject.Inject;
+import lombok.CustomLog;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import me.caneva20.messagedispatcher.dispachers.IMessageDispatcher;
 import me.caneva20.wayportals.portal.Portal;
 import me.caneva20.wayportals.portal.PortalManager;
+import me.caneva20.wayportals.portal.events.PortalLinkedEvent;
+import me.caneva20.wayportals.portal.events.PortalUnlinkEvent;
 import me.caneva20.wayportals.utils.BlockSearchUtility;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,6 +22,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
+@CustomLog
 @RequiredArgsConstructor(onConstructor = @__({@Inject}))
 public class SignEventHandler implements Listener {
 
@@ -84,5 +89,31 @@ public class SignEventHandler implements Listener {
       plugin.getServer().getScheduler()
           .scheduleSyncDelayedTask(plugin, () -> createSign(signBlock, portal, player));
     }
+  }
+
+  @EventHandler
+  private void onLink(PortalLinkedEvent event) {
+    updatePortal(event.source());
+    updatePortal(event.destination());
+  }
+
+  @EventHandler
+  private void onUnlink(PortalUnlinkEvent event) {
+    updatePortal(event.source());
+    updatePortal(event.destination());
+  }
+
+  private void updatePortal(@Nullable Portal portal) {
+    if (portal == null) {
+      return;
+    }
+
+    val sign = signManager.get(portal);
+
+    if (sign == null) {
+      return;
+    }
+
+    sign.update();
   }
 }
