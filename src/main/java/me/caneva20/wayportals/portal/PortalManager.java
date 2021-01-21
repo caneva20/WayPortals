@@ -11,6 +11,7 @@ import me.caneva20.wayportals.portal.db.PortalRecord;
 import me.caneva20.wayportals.portal.events.PortalCreateEvent;
 import me.caneva20.wayportals.portal.events.PortalDeleteEvent;
 import me.caneva20.wayportals.portal.events.PortalLinkEvent;
+import me.caneva20.wayportals.portal.events.PortalLinkedEvent;
 import me.caneva20.wayportals.portal.events.PortalUnlinkEvent;
 import me.caneva20.wayportals.utils.WorldVector3;
 import org.bukkit.Location;
@@ -114,6 +115,8 @@ public class PortalManager implements IPortalManager {
     db.setLinkId(src.id(), dst.id());
 
     link(dst, src);
+
+    pluginManager.callEvent(new PortalLinkedEvent(src, dst));
   }
 
   private Portal create(@NotNull PortalRecord record) {
