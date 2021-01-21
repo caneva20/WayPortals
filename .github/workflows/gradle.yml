@@ -29,5 +29,5 @@ jobs:
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
         file_glob: true
-        file: target/WayPortals-*.jar
+        file: build/libs/WayPortals-*.jar
         tag: ${{ github.ref }}
