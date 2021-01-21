@@ -2,6 +2,7 @@ package me.caneva20.wayportals.signs;
 
 import lombok.Getter;
 import lombok.ToString;
+import lombok.val;
 import me.caneva20.wayportals.portal.Portal;
 import me.caneva20.wayportals.utils.WorldVector3;
 import org.bukkit.block.Sign;
@@ -36,8 +37,10 @@ public class PortalSign {
   }
 
   public void update() {
-    if (portal.hasLink()) {
-      sign.setLine(0, String.format("%s -> %s", portal.id(), portal.link().id()));
+    val link = portal.link();
+
+    if (link != null) {
+      sign.setLine(0, String.format("%s -> %s", portal.id(), link.id()));
       sign.setLine(1, "");
     } else {
       sign.setLine(0, portal.id() + "");
