@@ -32,12 +32,13 @@ public class PortalSign {
     y = (int) location.y();
     z = (int) location.z();
 
-    updateSign();
+    update();
   }
 
-  private void updateSign() {
+  public void update() {
     if (portal.hasLink()) {
       sign.setLine(0, String.format("%s -> %s", portal.id(), portal.link().id()));
+      sign.setLine(1, "");
     } else {
       sign.setLine(0, portal.id() + "");
       sign.setLine(1, "Not linked");
