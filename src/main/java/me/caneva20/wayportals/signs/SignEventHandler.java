@@ -83,6 +83,12 @@ public class SignEventHandler implements Listener {
     var portal = findPortal(event.getBlock(), player);
 
     if (portal != null) {
+      if (signManager.get(portal) != null) {
+        log.info("This portal already have a sign assigned");
+
+        return;
+      }
+
       event.setCancelled(true);
       var signBlock = findSign(event.getBlock());
 
