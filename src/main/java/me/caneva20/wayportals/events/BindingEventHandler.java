@@ -1,9 +1,6 @@
 package me.caneva20.wayportals.events;
 
-import com.google.common.base.Stopwatch;
-import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
-import me.caneva20.messagedispatcher.dispachers.IMessageDispatcher;
 import me.caneva20.wayportals.portal.IPortalManager;
 import me.caneva20.wayportals.portal.Portal;
 import me.caneva20.wayportals.portalbinder.PortalBinder;
@@ -22,23 +19,20 @@ import org.jetbrains.annotations.Nullable;
 
 public class BindingEventHandler implements Listener {
 
-  private final IMessageDispatcher dispatcher;
   private final PortalBinderFactory binderFactory;
   private final PortalBinderUtility binderUtility;
   private final IPortalManager portalManager;
 
   @Inject
-  BindingEventHandler(IMessageDispatcher dispatcher, PortalBinderFactory binderFactory,
-      PortalBinderUtility binderUtility, IPortalManager portalManager) {
-    this.dispatcher = dispatcher;
+  BindingEventHandler(PortalBinderFactory binderFactory, PortalBinderUtility binderUtility,
+      IPortalManager portalManager) {
     this.binderFactory = binderFactory;
     this.binderUtility = binderUtility;
     this.portalManager = portalManager;
   }
 
-  private void bindTarget(Player player, PortalBinder binder, @NotNull Portal portal) {
+  private void bindTarget(PortalBinder binder, @NotNull Portal portal) {
     binder.setPortal(portal);
-    dispatcher.success(player, "Portal binder bound to this portal");
   }
 
   private void linkPortals(Player player, PortalBinder binder, @NotNull Portal portal) {
@@ -47,22 +41,10 @@ public class BindingEventHandler implements Listener {
     if (binder.hasPortal()) {
       portalManager.link(portal, binder.getPortal());
     }
-
-    dispatcher.debug(player, portal.toString());
-    dispatcher.debug(player, String.format("ID: %s", portal.id()));
   }
 
-  private @Nullable Portal findPortal(Block portalBlock, Player player) {
-    var stopwatch = Stopwatch.createStarted();
-    var portal = portalManager.get(portalBlock.getLocation());
-
-    stopwatch.stop();
-
-    dispatcher.debug(player, String.format("Find portal took %sms (%sμs) to run",
-        stopwatch.elapsed(TimeUnit.MILLISECONDS),
-        stopwatch.elapsed(TimeUnit.MICROSECONDS)));
-
-    return portal;
+  private @Nullable Portal findPortal(Block portalBlock) {
+    return portalManager.get(portalBlock.getLocation());
   }
 
   @EventHandler(priority = EventPriority.LOW)
@@ -83,23 +65,17 @@ public class BindingEventHandler implements Listener {
       return;
     }
 
-    var portal = findPortal(block, event.getPlayer());
+    var portal = findPortal(block);
 
     var binder = binderFactory.create(item);
 
     if (portal == null) {
-      dispatcher.debug(event.getPlayer(), "Portal not found here");
-
       return;
     }
 
     if (!binder.hasPortal()) {
-      dispatcher.debug(event.getPlayer(), "Binding to portal " + portal.id());
-
-      bindTarget(event.getPlayer(), binder, portal);
+      bindTarget(binder, portal);
     } else {
-      dispatcher.debug(event.getPlayer(), String.format("Binding portal %s to %s", binder.getPortal().id(), portal.id()));
-
       linkPortals(event.getPlayer(), binder, portal);
     }
 
