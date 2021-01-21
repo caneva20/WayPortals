@@ -11,6 +11,8 @@ public interface ISignDatabase {
 
   @Nullable SignRecord find(WorldVector3 location);
 
+  @Nullable SignRecord findForPortal(long portalId);
+
   @Nullable SignRecord create(WorldVector3 location, int portalId);
 
   void delete(long signId);

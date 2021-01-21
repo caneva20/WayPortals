@@ -36,6 +36,11 @@ public class SignDatabase implements ISignDatabase {
   }
 
   @Override
+  public @Nullable SignRecord findForPortal(long portalId) {
+    return createRecord(findPortalRow(portalId));
+  }
+
+  @Override
   public @Nullable SignRecord create(WorldVector3 location, int portalId) {
     try {
       var id = DB
@@ -90,6 +95,18 @@ public class SignDatabase implements ISignDatabase {
       return DB
           .getFirstRow("SELECT * FROM signs WHERE world = ? AND x = ? AND y = ? AND z = ? LIMIT 1",
               location.world(), location.x(), location.y(), location.z());
+    } catch (SQLException ex) {
+      logException(ex);
+    }
+
+    return null;
+  }
+
+  private @Nullable DbRow findPortalRow(long portalId) {
+    try {
+      return DB
+          .getFirstRow("SELECT * FROM signs WHERE portal_id = ? LIMIT 1",
+              portalId);
     } catch (SQLException ex) {
       logException(ex);
     }

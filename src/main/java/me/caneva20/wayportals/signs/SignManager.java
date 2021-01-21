@@ -8,6 +8,7 @@ import me.caneva20.wayportals.portal.Portal;
 import me.caneva20.wayportals.signs.db.ISignDatabase;
 import me.caneva20.wayportals.signs.db.SignRecord;
 import me.caneva20.wayportals.utils.WorldVector3;
+import org.bukkit.Bukkit;
 import org.bukkit.block.Sign;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,26 +23,46 @@ public class SignManager implements ISignManager {
   public @Nullable PortalSign get(Sign sign) {
     var record = db.find(new WorldVector3(sign.getLocation()));
 
+    return create(record, sign, null);
+  }
+
+  @Override
+  public @Nullable PortalSign get(Portal portal) {
+    val record = db.findForPortal(portal.id());
+
     if (record == null) {
       return null;
     }
 
-    return create(record, sign, null);
+    val world = Bukkit.getWorld(record.world());
+
+    if (world == null) {
+      return null;
+    }
+
+    val block = world.getBlockAt(record.x(), record.y(), record.z());
+
+    if (block.getState() instanceof Sign) {
+      return create(record, (Sign) block.getState(), portal);
+    }
+
+    return null;
   }
 
   @Override
   public @Nullable PortalSign create(@NotNull Sign sign, @NotNull Portal portal) {
     val record = db.create(new WorldVector3(sign.getLocation()), (int) portal.id());
 
+    return create(record, sign, portal);
+  }
+
+  private @Nullable PortalSign create(@Nullable SignRecord record, @NotNull Sign sign,
+      @Nullable Portal portal) {
+
     if (record == null) {
       return null;
     }
 
-    return create(record, sign, portal);
-  }
-
-  private @NotNull PortalSign create(@NotNull SignRecord record, @NotNull Sign sign,
-      @Nullable Portal portal) {
     if (portal == null) {
       portal = portalManager.find(record.portalId());
     }

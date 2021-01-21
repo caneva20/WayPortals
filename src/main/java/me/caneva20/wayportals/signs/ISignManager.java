@@ -9,5 +9,7 @@ public interface ISignManager {
 
   @Nullable PortalSign get(Sign sign);
 
+  @Nullable PortalSign get(Portal portal);
+
   @Nullable PortalSign create(@NotNull Sign sign, @NotNull Portal portal);
 }
