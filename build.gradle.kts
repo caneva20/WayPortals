@@ -12,11 +12,11 @@ plugins {
 
 repositories {
     mavenLocal()
-    maven { url = uri("https://repo.maven.apache.org/maven2/") }
-    maven { url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") }
-    maven { url = uri("https://papermc.io/repo/repository/maven-public/") }
-    maven { url = uri("https://repo.aikar.co/content/groups/aikar/") }
-    maven { url = uri("https://jitpack.io") }
+    maven("https://repo.maven.apache.org/maven2/")
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+    maven("https://papermc.io/repo/repository/maven-public/")
+    maven("https://repo.aikar.co/content/groups/aikar/")
+    maven("https://jitpack.io")
 }
 
 dependencies {
@@ -26,6 +26,7 @@ dependencies {
     implementation("org.xerial:sqlite-jdbc:3.34.0")
     implementation("com.google.dagger:dagger:2.31")
     implementation("io.papermc:paperlib:1.0.6")
+    implementation("ch.jalu:configme:1.2.0")
 
     compileOnly("org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT")
     compileOnly("me.caneva20:C20core:1.1.7")
@@ -93,6 +94,7 @@ tasks.shadowJar {
     relocate("co.aikar.idb", "me.caneva20.wayportals.idb")
     relocate("co.aikar.locales", "me.caneva20.wayportals.acf-locales")
     relocate("io.papermc.lib", "me.caneva20.wayportals.paperlib")
+    relocate("ch.jalu.configme", "me.caneva20.wayportals.configme")
 
     if (minimizeJar) {
         minimize()
