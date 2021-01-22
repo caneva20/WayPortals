@@ -1,6 +1,7 @@
 package me.caneva20.wayportals.events;
 
 import javax.inject.Inject;
+import me.caneva20.messagedispatcher.dispachers.IMessageDispatcher;
 import me.caneva20.wayportals.portal.IPortalManager;
 import me.caneva20.wayportals.portal.Portal;
 import me.caneva20.wayportals.portalbinder.PortalBinder;
@@ -23,13 +24,15 @@ public class BindingEventHandler implements Listener {
   private final PortalBinderFactory binderFactory;
   private final PortalBinderUtility binderUtility;
   private final IPortalManager portalManager;
+  private final IMessageDispatcher dispatcher;
 
   @Inject
   BindingEventHandler(PortalBinderFactory binderFactory, PortalBinderUtility binderUtility,
-      IPortalManager portalManager) {
+      IPortalManager portalManager, IMessageDispatcher dispatcher) {
     this.binderFactory = binderFactory;
     this.binderUtility = binderUtility;
     this.portalManager = portalManager;
+    this.dispatcher = dispatcher;
   }
 
   private void bindTarget(PortalBinder binder, @NotNull Portal portal) {
@@ -38,6 +41,12 @@ public class BindingEventHandler implements Listener {
 
   private void linkPortals(Player player, PortalBinder binder, @NotNull Portal portal) {
     if (!binder.hasPortal()) {
+      return;
+    }
+
+    if (binder.getPortal().id() == portal.id()) {
+      dispatcher.warn(player, "You bind a portal to itself!");
+
       return;
     }
 
