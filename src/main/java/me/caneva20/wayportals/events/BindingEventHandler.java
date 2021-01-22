@@ -6,6 +6,7 @@ import me.caneva20.wayportals.portal.Portal;
 import me.caneva20.wayportals.portalbinder.PortalBinder;
 import me.caneva20.wayportals.portalbinder.PortalBinderFactory;
 import me.caneva20.wayportals.portalbinder.PortalBinderUtility;
+import me.caneva20.wayportals.utils.InventoryUtility;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -36,11 +37,15 @@ public class BindingEventHandler implements Listener {
   }
 
   private void linkPortals(Player player, PortalBinder binder, @NotNull Portal portal) {
-    player.getInventory().remove(binder.getStack());
-
-    if (binder.hasPortal()) {
-      portalManager.link(portal, binder.getPortal());
+    if (!binder.hasPortal()) {
+      return;
     }
+
+    if (!InventoryUtility.withdraw(player, binder.getStack(), 1)) {
+      return;
+    }
+
+    portalManager.link(portal, binder.getPortal());
   }
 
   private @Nullable Portal findPortal(Block portalBlock) {
