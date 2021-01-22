@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 public final class InventoryUtility {
 
   public static boolean withdraw(Inventory inventory, ItemStack stack, int amount) {
-    val stacks = Arrays.stream(inventory.getContents()).filter(x -> x.equals(stack));
+    val stacks = Arrays.stream(inventory.getContents()).filter(x -> x != null && x.equals(stack));
 
     return withdraw(stacks, amount);
   }
