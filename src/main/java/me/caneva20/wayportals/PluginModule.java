@@ -21,6 +21,46 @@ import me.caneva20.wayportals.signs.SignModule;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+@Singleton
+@Component(modules = {PluginModule.class, PortalModule.class, SignModule.class,
+    PortalBinderModule.class})
+interface PluginComponent {
+
+  //Plugin instances
+  WayPortals getWayPortalsPlugin();
+
+  JavaPlugin getJavaPlugin();
+
+  //Logging
+  IConsoleMessageDispatcher getConsoleMessageDispatcher();
+
+  IMessageDispatcher getMessageDispatcher();
+
+  //Others
+  DatabaseHandler getDatabaseHandler();
+
+  //Events
+  InteractionEventHandler getInteractionEventHandler();
+
+  BindingEventHandler getBindingEventHandler();
+
+  TeleportEventHandler getTeleportEventHandler();
+
+  SignEventHandler getSignEventHandler();
+
+  BinderEventHandler getBinderEventHandler();
+
+  //Commands
+  PaperCommandManager getCommandManager();
+
+  WayPortalsCommand getWayPortalsCommand();
+
+  //Configs
+  IBinderConfig getDropperConfig();
+
+  void inject(WayPortals plugin);
+}
+
 @Module
 public class PluginModule {
 
@@ -65,44 +105,4 @@ public class PluginModule {
   PluginManager providePluginManager() {
     return plugin.getServer().getPluginManager();
   }
-}
-
-@Singleton
-@Component(modules = {PluginModule.class, PortalModule.class, SignModule.class,
-    PortalBinderModule.class})
-interface PluginComponent {
-
-  //Plugin instances
-  WayPortals getWayPortalsPlugin();
-
-  JavaPlugin getJavaPlugin();
-
-  //Logging
-  IConsoleMessageDispatcher getConsoleMessageDispatcher();
-
-  IMessageDispatcher getMessageDispatcher();
-
-  //Others
-  DatabaseHandler getDatabaseHandler();
-
-  //Events
-  InteractionEventHandler getInteractionEventHandler();
-
-  BindingEventHandler getBindingEventHandler();
-
-  TeleportEventHandler getTeleportEventHandler();
-
-  SignEventHandler getSignEventHandler();
-
-  BinderEventHandler getBinderEventHandler();
-
-  //Commands
-  PaperCommandManager getCommandManager();
-
-  WayPortalsCommand getWayPortalsCommand();
-
-  //Configs
-  IBinderConfig getDropperConfig();
-
-  void inject(WayPortals plugin);
 }

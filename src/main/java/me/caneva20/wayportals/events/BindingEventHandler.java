@@ -57,7 +57,8 @@ public class BindingEventHandler implements Listener {
     portalManager.link(portal, binder.portal());
   }
 
-  private @Nullable Portal findPortal(Block portalBlock) {
+  @Nullable
+  private Portal findPortal(Block portalBlock) {
     return portalManager.get(portalBlock.getLocation());
   }
 

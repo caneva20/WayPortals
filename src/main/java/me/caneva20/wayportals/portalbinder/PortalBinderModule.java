@@ -26,8 +26,8 @@ public class PortalBinderModule {
   SettingsManager provideDropperConfigManager() {
     final var path = String.format("%s/config.yaml", plugin.getDataFolder());
 
-    return SettingsManagerBuilder.withYamlFile(new File(path))
-        .configurationData(BinderConfig.class).useDefaultMigrationService().create();
+    return SettingsManagerBuilder.withYamlFile(new File(path)).configurationData(BinderConfig.class)
+        .useDefaultMigrationService().create();
   }
 
   @Provides

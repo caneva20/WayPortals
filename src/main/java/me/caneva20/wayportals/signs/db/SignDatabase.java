@@ -29,22 +29,26 @@ public class SignDatabase implements ISignDatabase {
   }
 
   @Override
-  public @Nullable SignRecord find(long id) {
+  @Nullable
+  public SignRecord find(long id) {
     return createRecord(findRow(id));
   }
 
   @Override
-  public @Nullable SignRecord find(WorldVector3 location) {
+  @Nullable
+  public SignRecord find(WorldVector3 location) {
     return createRecord(findRow(location));
   }
 
   @Override
-  public @Nullable SignRecord findForPortal(long portalId) {
+  @Nullable
+  public SignRecord findForPortal(long portalId) {
     return createRecord(findPortalRow(portalId));
   }
 
   @Override
-  public @Nullable SignRecord create(WorldVector3 location, int portalId) {
+  @Nullable
+  public SignRecord create(WorldVector3 location, int portalId) {
     try {
       var id = DB
           .executeInsert("INSERT INTO signs(portal_id, world, x, y, z) VALUES(?, ?, ?, ?, ?)",
@@ -68,7 +72,8 @@ public class SignDatabase implements ISignDatabase {
     }
   }
 
-  private @Nullable SignRecord createRecord(DbRow row) {
+  @Nullable
+  private SignRecord createRecord(DbRow row) {
     if (row == null) {
       return null;
     }
@@ -83,7 +88,8 @@ public class SignDatabase implements ISignDatabase {
     return new SignRecord(id, portalId, world, x, y, z);
   }
 
-  private @Nullable DbRow findRow(long id) {
+  @Nullable
+  private DbRow findRow(long id) {
     try {
       return DB.getFirstRow("SELECT * FROM signs WHERE id = ? LIMIT 1", id);
     } catch (SQLException ex) {
@@ -93,7 +99,8 @@ public class SignDatabase implements ISignDatabase {
     return null;
   }
 
-  private @Nullable DbRow findRow(WorldVector3 location) {
+  @Nullable
+  private DbRow findRow(WorldVector3 location) {
     try {
       return DB
           .getFirstRow("SELECT * FROM signs WHERE world = ? AND x = ? AND y = ? AND z = ? LIMIT 1",
@@ -105,11 +112,10 @@ public class SignDatabase implements ISignDatabase {
     return null;
   }
 
-  private @Nullable DbRow findPortalRow(long portalId) {
+  @Nullable
+  private DbRow findPortalRow(long portalId) {
     try {
-      return DB
-          .getFirstRow("SELECT * FROM signs WHERE portal_id = ? LIMIT 1",
-              portalId);
+      return DB.getFirstRow("SELECT * FROM signs WHERE portal_id = ? LIMIT 1", portalId);
     } catch (SQLException ex) {
       logException(ex);
     }

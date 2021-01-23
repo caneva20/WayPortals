@@ -18,7 +18,8 @@ public class PortalRecord {
   private final int maxY;
   private final int maxZ;
 
-  private final @Nullable Integer linkedPortalId;
+  @Nullable
+  private final Integer linkedPortalId;
 
   public WorldVector3 location() {
     return new WorldVector3(minX, minY, minZ, world);

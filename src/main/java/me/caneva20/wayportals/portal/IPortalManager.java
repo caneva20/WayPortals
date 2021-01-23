@@ -6,9 +6,11 @@ import org.jetbrains.annotations.Nullable;
 
 public interface IPortalManager {
 
-  @Nullable Portal get(Location location);
+  @Nullable
+  Portal get(Location location);
 
-  @Nullable Portal find(long id);
+  @Nullable
+  Portal find(long id);
 
   void delete(@NotNull Portal portal);
 

@@ -13,7 +13,8 @@ public interface ISignManager {
    * @param sign the sign to search with
    * @return the PortalSign at that position or null if none is found
    */
-  @Nullable PortalSign get(Sign sign);
+  @Nullable
+  PortalSign get(Sign sign);
 
   /**
    * Tries to find a PortalSign for the given portal
@@ -21,14 +22,17 @@ public interface ISignManager {
    * @param portal the portal to look a PortalSign for
    * @return the PortalSign of the given portal or null if none is found
    */
-  @Nullable PortalSign get(Portal portal);
+  @Nullable
+  PortalSign get(Portal portal);
 
   /**
    * Tries to create a PortalSign for the given portal with the given sign
-   * @param sign the sign use for creation
+   *
+   * @param sign   the sign use for creation
    * @param portal the portal to create the PortalSign for
-   * @return the PortalSign created or null if none was create or null if the given portal
-   * already have PortalSign assigned to it
+   * @return the PortalSign created or null if none was create or null if the given portal already
+   * have PortalSign assigned to it
    */
-  @Nullable PortalSign create(@NotNull Sign sign, @NotNull Portal portal);
+  @Nullable
+  PortalSign create(@NotNull Sign sign, @NotNull Portal portal);
 }

@@ -7,13 +7,17 @@ public interface ISignDatabase {
 
   void initialize();
 
-  @Nullable SignRecord find(long id);
+  @Nullable
+  SignRecord find(long id);
 
-  @Nullable SignRecord find(WorldVector3 location);
+  @Nullable
+  SignRecord find(WorldVector3 location);
 
-  @Nullable SignRecord findForPortal(long portalId);
+  @Nullable
+  SignRecord findForPortal(long portalId);
 
-  @Nullable SignRecord create(WorldVector3 location, int portalId);
+  @Nullable
+  SignRecord create(WorldVector3 location, int portalId);
 
   void delete(long signId);
 }

@@ -15,7 +15,8 @@ public class PortalUtility {
   private PortalUtility() {
   }
 
-  public static @Nullable Region find(Block portalBlock) {
+  @Nullable
+  public static Region find(Block portalBlock) {
     if (portalBlock.getType() != Material.NETHER_PORTAL) {
       return null;
     }

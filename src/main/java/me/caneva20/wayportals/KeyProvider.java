@@ -7,21 +7,22 @@ import javax.inject.Singleton;
 
 @Singleton
 public class KeyProvider {
-    private static final String portalBinderStringKey = "portal_binder";
-    private static final String portalBinderTargetStringKey = "portal_binder_location";
 
-    private final WayPortals plugin;
+  private static final String portalBinderStringKey = "portal_binder";
+  private static final String portalBinderTargetStringKey = "portal_binder_location";
 
-    @Inject
-    KeyProvider(WayPortals plugin) {
-        this.plugin = plugin;
-    }
+  private final WayPortals plugin;
 
-    public NamespacedKey getPortalBinderKey() {
-        return new NamespacedKey(plugin, portalBinderStringKey);
-    }
+  @Inject
+  KeyProvider(WayPortals plugin) {
+    this.plugin = plugin;
+  }
 
-    public NamespacedKey getPortalBinderTargetKey() {
-        return new NamespacedKey(plugin, portalBinderTargetStringKey);
-    }
+  public NamespacedKey getPortalBinderKey() {
+    return new NamespacedKey(plugin, portalBinderStringKey);
+  }
+
+  public NamespacedKey getPortalBinderTargetKey() {
+    return new NamespacedKey(plugin, portalBinderTargetStringKey);
+  }
 }

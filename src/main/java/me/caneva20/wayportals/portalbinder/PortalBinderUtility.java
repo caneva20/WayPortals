@@ -24,13 +24,12 @@ public class PortalBinderUtility {
       return false;
     }
 
-    return Objects.requireNonNull(stack.getItemMeta())
-        .getPersistentDataContainer()
+    return Objects.requireNonNull(stack.getItemMeta()).getPersistentDataContainer()
         .has(keys.getPortalBinderKey(), PersistentDataType.INTEGER);
   }
 
   public boolean hasBinderInHand(Player player) {
-    return isBinder(player.getInventory().getItemInMainHand()) ||
-        isBinder(player.getInventory().getItemInOffHand());
+    return isBinder(player.getInventory().getItemInMainHand()) || isBinder(
+        player.getInventory().getItemInOffHand());
   }
 }

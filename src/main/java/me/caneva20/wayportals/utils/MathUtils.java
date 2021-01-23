@@ -4,6 +4,7 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class MathUtils {
+
   public static double map(double value, double fMin, double fMax, double tMin, double tMax) {
     if (tMin == tMax) {
       return tMin;

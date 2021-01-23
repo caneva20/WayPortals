@@ -20,10 +20,8 @@ public final class WayPortals extends JavaPlugin {
 
   @Override
   public void onEnable() {
-    var component = DaggerPluginComponent.builder()
-        .pluginModule(new PluginModule(this))
-        .portalBinderModule(new PortalBinderModule(this))
-        .build();
+    var component = DaggerPluginComponent.builder().pluginModule(new PluginModule(this))
+        .portalBinderModule(new PortalBinderModule(this)).build();
 
     component.inject(this);
     database = component.getDatabaseHandler();

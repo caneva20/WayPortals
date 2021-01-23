@@ -28,7 +28,8 @@ public class TeleportEventHandler implements Listener {
     this.portalManager = portalManager;
   }
 
-  private @Nullable Portal findPortal(Block block) {
+  @Nullable
+  private Portal findPortal(Block block) {
     Block portalBlock = null;
 
     for (BlockFace face : faces) {

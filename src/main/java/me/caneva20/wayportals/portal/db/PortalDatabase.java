@@ -33,17 +33,20 @@ public class PortalDatabase implements IPortalDatabase {
   }
 
   @Override
-  public @Nullable PortalRecord find(long id) {
+  @Nullable
+  public PortalRecord find(long id) {
     return createRecord(findRow(id));
   }
 
   @Override
-  public @Nullable PortalRecord find(Region region) {
+  @Nullable
+  public PortalRecord find(Region region) {
     return createRecord(findRow(region));
   }
 
   @Override
-  public @Nullable PortalRecord create(Region region) {
+  @Nullable
+  public PortalRecord create(Region region) {
     try {
       var id = DB.executeInsert(
           "INSERT INTO portals(world, min_x, min_y, min_z, max_x, max_y, max_z) VALUES(?, ?, ?, ?, ?, ?, ?)",
@@ -85,7 +88,8 @@ public class PortalDatabase implements IPortalDatabase {
     ex.printStackTrace();
   }
 
-  private @Nullable PortalRecord createRecord(DbRow row) {
+  @Nullable
+  private PortalRecord createRecord(DbRow row) {
     if (row == null) {
       return null;
     }
@@ -103,8 +107,8 @@ public class PortalDatabase implements IPortalDatabase {
     return new PortalRecord(id, world, minX, minY, minZ, maxX, maxY, maxZ, linkedPortalId);
   }
 
-
-  private @Nullable DbRow findRow(long id) {
+  @Nullable
+  private DbRow findRow(long id) {
     try {
       return DB.getFirstRow("SELECT * FROM portals WHERE id = ? LIMIT 1", id);
     } catch (SQLException ex) {
@@ -114,7 +118,8 @@ public class PortalDatabase implements IPortalDatabase {
     return null;
   }
 
-  private @Nullable DbRow findRow(Region region) {
+  @Nullable
+  private DbRow findRow(Region region) {
     try {
       return DB.getFirstRow(
           "SELECT * FROM portals WHERE world = ? AND min_x = ? AND min_y = ? AND min_z = ? AND max_x = ? AND max_y = ? AND max_z = ? LIMIT 1",

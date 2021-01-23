@@ -36,7 +36,8 @@ public class PortalManager implements IPortalManager {
    * @return The portal found at [location] or null if none is found
    */
   @Override
-  public @Nullable Portal get(Location location) {
+  @Nullable
+  public Portal get(Location location) {
     var region = PortalUtility.find(location.getBlock());
 
     if (region == null) {
@@ -64,7 +65,8 @@ public class PortalManager implements IPortalManager {
   }
 
   @Override
-  public @Nullable Portal find(long id) {
+  @Nullable
+  public Portal find(long id) {
     final var record = db.find(id);
 
     if (record == null) {
@@ -164,7 +166,8 @@ class Pool {
     pool.remove(portal);
   }
 
-  static @Nullable Portal find(long id) {
+  @Nullable
+  static Portal find(long id) {
     return pool.stream().filter(x -> x.id() == id).findFirst().orElse(null);
   }
 }

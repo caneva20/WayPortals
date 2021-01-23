@@ -54,7 +54,8 @@ public class SignEventHandler implements Listener {
     return (Sign) signBlock.getState();
   }
 
-  private @Nullable Portal findPortal(Block signBlock) {
+  @Nullable
+  private Portal findPortal(Block signBlock) {
     var oppositeFace = ((WallSign) signBlock.getBlockData()).getFacing().getOppositeFace();
 
     var attachedBlock = signBlock.getRelative(oppositeFace);

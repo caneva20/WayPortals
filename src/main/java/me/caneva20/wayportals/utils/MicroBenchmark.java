@@ -35,8 +35,7 @@ public class MicroBenchmark {
     stopwatch.stop();
 
     dispatcher.debug(String.format("[Benchmark] %s took %sms (%sμs) to run", description,
-        stopwatch.elapsed(TimeUnit.MILLISECONDS),
-        stopwatch.elapsed(TimeUnit.MICROSECONDS)));
+        stopwatch.elapsed(TimeUnit.MILLISECONDS), stopwatch.elapsed(TimeUnit.MICROSECONDS)));
   }
 
   public <T> T run(String description, Function<T> action) {
@@ -47,8 +46,7 @@ public class MicroBenchmark {
     stopwatch.stop();
 
     dispatcher.debug(String.format("[Benchmark] %s took %sms (%sμs) to run", description,
-        stopwatch.elapsed(TimeUnit.MILLISECONDS),
-        stopwatch.elapsed(TimeUnit.MICROSECONDS)));
+        stopwatch.elapsed(TimeUnit.MILLISECONDS), stopwatch.elapsed(TimeUnit.MICROSECONDS)));
 
     return result;
   }

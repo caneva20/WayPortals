@@ -15,41 +15,42 @@ import javax.inject.Inject;
 
 @CommandAlias("wayportals|wp|wayp")
 public class WayPortalsCommand extends BaseCommand {
-    private final IMessageDispatcher dispatcher;
-    private final PortalBinderUtility binderUtility;
-    private final IPortalBinderManager binderManager;
 
-    @Inject
-    WayPortalsCommand(IMessageDispatcher dispatcher, PortalBinderUtility binderUtility,
-        IPortalBinderManager binderManager) {
-        this.dispatcher = dispatcher;
-        this.binderUtility = binderUtility;
-        this.binderManager = binderManager;
+  private final IMessageDispatcher dispatcher;
+  private final PortalBinderUtility binderUtility;
+  private final IPortalBinderManager binderManager;
+
+  @Inject
+  WayPortalsCommand(IMessageDispatcher dispatcher, PortalBinderUtility binderUtility,
+      IPortalBinderManager binderManager) {
+    this.dispatcher = dispatcher;
+    this.binderUtility = binderUtility;
+    this.binderManager = binderManager;
+  }
+
+  @Subcommand("item")
+  public void onItem(Player sender, Material material) {
+    var stack = new ItemStack(material);
+
+    binderManager.get(stack);
+
+    sender.getInventory().addItem(stack);
+
+    dispatcher.success(sender, "Here's your item!");
+  }
+
+  @Subcommand("dump")
+  public void onDump(Player player) {
+    var stack = player.getInventory().getItemInMainHand();
+
+    if (!binderUtility.isBinder(stack)) {
+      dispatcher.error(player, "This item is not a portal binder");
+
+      return;
     }
 
-    @Subcommand("item")
-    public void onItem(Player sender, Material material) {
-        var stack = new ItemStack(material);
+    val portal = binderManager.get(stack).portal();
 
-        binderManager.get(stack);
-
-        sender.getInventory().addItem(stack);
-
-        dispatcher.success(sender, "Here's your item!");
-    }
-
-    @Subcommand("dump")
-    public void onDump(Player player) {
-        var stack = player.getInventory().getItemInMainHand();
-
-        if (!binderUtility.isBinder(stack)) {
-            dispatcher.error(player, "This item is not a portal binder");
-
-            return;
-        }
-
-        val portal = binderManager.get(stack).portal();
-
-        dispatcher.debug(player, "Location: " + (portal != null ? portal.toString() : "nowhere"));
-    }
+    dispatcher.debug(player, "Location: " + (portal != null ? portal.toString() : "nowhere"));
+  }
 }

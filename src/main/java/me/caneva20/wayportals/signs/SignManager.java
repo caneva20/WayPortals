@@ -24,14 +24,16 @@ public class SignManager implements ISignManager {
   }
 
   @Override
-  public @Nullable PortalSign get(Sign sign) {
+  @Nullable
+  public PortalSign get(Sign sign) {
     var record = db.find(new WorldVector3(sign.getLocation()));
 
     return create(record, sign, null);
   }
 
   @Override
-  public @Nullable PortalSign get(Portal portal) {
+  @Nullable
+  public PortalSign get(Portal portal) {
     val record = db.findForPortal(portal.id());
 
     if (record == null) {
@@ -56,7 +58,8 @@ public class SignManager implements ISignManager {
   }
 
   @Override
-  public @Nullable PortalSign create(@NotNull Sign sign, @NotNull Portal portal) {
+  @Nullable
+  public PortalSign create(@NotNull Sign sign, @NotNull Portal portal) {
     if (get(portal) != null) {
       return null;
     }
@@ -66,7 +69,8 @@ public class SignManager implements ISignManager {
     return create(record, sign, portal);
   }
 
-  private @Nullable PortalSign create(@Nullable SignRecord record, @NotNull Sign sign,
+  @Nullable
+  private PortalSign create(@Nullable SignRecord record, @NotNull Sign sign,
       @Nullable Portal portal) {
 
     if (record == null) {

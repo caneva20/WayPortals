@@ -7,11 +7,14 @@ public interface IPortalDatabase {
 
   void initialize();
 
-  @Nullable PortalRecord find(long id);
+  @Nullable
+  PortalRecord find(long id);
 
-  @Nullable PortalRecord find(Region region);
+  @Nullable
+  PortalRecord find(Region region);
 
-  @Nullable PortalRecord create(Region region);
+  @Nullable
+  PortalRecord create(Region region);
 
   void delete(long portalId);
 
