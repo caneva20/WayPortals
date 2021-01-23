@@ -8,7 +8,7 @@ public interface IPortalManager {
 
   @Nullable Portal get(Location location);
 
-  @Nullable Portal find(int id);
+  @Nullable Portal find(long id);
 
   void delete(@NotNull Portal portal);
 

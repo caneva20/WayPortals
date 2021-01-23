@@ -64,7 +64,7 @@ public class PortalManager implements IPortalManager {
   }
 
   @Override
-  public @Nullable Portal find(int id) {
+  public @Nullable Portal find(long id) {
     final var record = db.find(id);
 
     if (record == null) {
