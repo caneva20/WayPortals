@@ -4,8 +4,8 @@ import javax.inject.Inject;
 import me.caneva20.messagedispatcher.dispachers.IMessageDispatcher;
 import me.caneva20.wayportals.portal.IPortalManager;
 import me.caneva20.wayportals.portal.Portal;
+import me.caneva20.wayportals.portalbinder.IPortalBinderManager;
 import me.caneva20.wayportals.portalbinder.PortalBinder;
-import me.caneva20.wayportals.portalbinder.PortalBinderFactory;
 import me.caneva20.wayportals.portalbinder.PortalBinderUtility;
 import me.caneva20.wayportals.utils.InventoryUtility;
 import org.bukkit.Material;
@@ -21,22 +21,22 @@ import org.jetbrains.annotations.Nullable;
 
 public class BindingEventHandler implements Listener {
 
-  private final PortalBinderFactory binderFactory;
+  private final IPortalBinderManager binderManager;
   private final PortalBinderUtility binderUtility;
   private final IPortalManager portalManager;
   private final IMessageDispatcher dispatcher;
 
   @Inject
-  BindingEventHandler(PortalBinderFactory binderFactory, PortalBinderUtility binderUtility,
+  BindingEventHandler(IPortalBinderManager binderManager, PortalBinderUtility binderUtility,
       IPortalManager portalManager, IMessageDispatcher dispatcher) {
-    this.binderFactory = binderFactory;
+    this.binderManager = binderManager;
     this.binderUtility = binderUtility;
     this.portalManager = portalManager;
     this.dispatcher = dispatcher;
   }
 
   private void bindTarget(PortalBinder binder, @NotNull Portal portal) {
-    binder.setPortal(portal);
+    binderManager.setPortal(binder, portal);
   }
 
   private void linkPortals(Player player, PortalBinder binder, @NotNull Portal portal) {
@@ -44,17 +44,17 @@ public class BindingEventHandler implements Listener {
       return;
     }
 
-    if (binder.getPortal().id() == portal.id()) {
+    if (binder.portal().id() == portal.id()) {
       dispatcher.warn(player, "You bind a portal to itself!");
 
       return;
     }
 
-    if (!InventoryUtility.withdraw(player, binder.getStack(), 1)) {
+    if (!InventoryUtility.withdraw(player, binder.stack(), 1)) {
       return;
     }
 
-    portalManager.link(portal, binder.getPortal());
+    portalManager.link(portal, binder.portal());
   }
 
   private @Nullable Portal findPortal(Block portalBlock) {
@@ -81,7 +81,7 @@ public class BindingEventHandler implements Listener {
 
     var portal = findPortal(block);
 
-    var binder = binderFactory.create(item);
+    var binder = binderManager.get(item);
 
     if (portal == null) {
       return;

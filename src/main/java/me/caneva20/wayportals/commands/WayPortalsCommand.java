@@ -3,8 +3,9 @@ package me.caneva20.wayportals.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Subcommand;
+import lombok.val;
 import me.caneva20.messagedispatcher.dispachers.IMessageDispatcher;
-import me.caneva20.wayportals.portalbinder.PortalBinderFactory;
+import me.caneva20.wayportals.portalbinder.IPortalBinderManager;
 import me.caneva20.wayportals.portalbinder.PortalBinderUtility;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -16,22 +17,21 @@ import javax.inject.Inject;
 public class WayPortalsCommand extends BaseCommand {
     private final IMessageDispatcher dispatcher;
     private final PortalBinderUtility binderUtility;
-    private final PortalBinderFactory binderFactory;
+    private final IPortalBinderManager binderManager;
 
     @Inject
-    WayPortalsCommand(
-            IMessageDispatcher dispatcher, PortalBinderUtility binderUtility, PortalBinderFactory binderFactory
-    ) {
+    WayPortalsCommand(IMessageDispatcher dispatcher, PortalBinderUtility binderUtility,
+        IPortalBinderManager binderManager) {
         this.dispatcher = dispatcher;
         this.binderUtility = binderUtility;
-        this.binderFactory = binderFactory;
+        this.binderManager = binderManager;
     }
 
     @Subcommand("item")
     public void onItem(Player sender, Material material) {
         var stack = new ItemStack(material);
 
-        binderFactory.create(stack);
+        binderManager.get(stack);
 
         sender.getInventory().addItem(stack);
 
@@ -48,8 +48,8 @@ public class WayPortalsCommand extends BaseCommand {
             return;
         }
 
-        var location = binderFactory.create(stack).getPortal();
+        val portal = binderManager.get(stack).portal();
 
-        dispatcher.debug(player, "Location: " + (location != null ? location.toString() : "nowhere"));
+        dispatcher.debug(player, "Location: " + (portal != null ? portal.toString() : "nowhere"));
     }
 }
