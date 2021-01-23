@@ -4,15 +4,18 @@ import co.aikar.idb.DB;
 import co.aikar.idb.DbRow;
 import java.sql.SQLException;
 import javax.inject.Inject;
-import lombok.RequiredArgsConstructor;
 import me.caneva20.messagedispatcher.dispachers.IConsoleMessageDispatcher;
 import me.caneva20.wayportals.utils.WorldVector3;
 import org.jetbrains.annotations.Nullable;
 
-@RequiredArgsConstructor(onConstructor = @__({@Inject}))
 public class SignDatabase implements ISignDatabase {
 
   private final IConsoleMessageDispatcher dispatcher;
+
+  @Inject
+  SignDatabase(IConsoleMessageDispatcher dispatcher) {
+    this.dispatcher = dispatcher;
+  }
 
   @Override
   public void initialize() {

@@ -2,7 +2,6 @@ package me.caneva20.wayportals.events;
 
 import io.papermc.lib.PaperLib;
 import javax.inject.Inject;
-import lombok.RequiredArgsConstructor;
 import lombok.val;
 import me.caneva20.wayportals.portal.IPortalManager;
 import me.caneva20.wayportals.portal.Portal;
@@ -17,13 +16,17 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.jetbrains.annotations.Nullable;
 
-@RequiredArgsConstructor(onConstructor = @__({@Inject}))
 public class TeleportEventHandler implements Listener {
 
   private static final BlockFace[] faces = {BlockFace.SELF, BlockFace.NORTH, BlockFace.SOUTH,
       BlockFace.EAST, BlockFace.WEST};
 
   private final IPortalManager portalManager;
+
+  @Inject
+  TeleportEventHandler(IPortalManager portalManager) {
+    this.portalManager = portalManager;
+  }
 
   private @Nullable Portal findPortal(Block block) {
     Block portalBlock = null;

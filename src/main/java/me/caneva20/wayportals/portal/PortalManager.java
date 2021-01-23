@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import lombok.RequiredArgsConstructor;
 import lombok.val;
 import me.caneva20.wayportals.portal.db.IPortalDatabase;
 import me.caneva20.wayportals.portal.db.PortalRecord;
@@ -20,11 +19,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Singleton
-@RequiredArgsConstructor(onConstructor = @__({@Inject}))
 public class PortalManager implements IPortalManager {
 
   private final IPortalDatabase db;
   private final PluginManager pluginManager;
+
+  @Inject
+  PortalManager(IPortalDatabase db, PluginManager pluginManager) {
+    this.db = db;
+    this.pluginManager = pluginManager;
+  }
 
   /**
    * Creates or load a portal at [location]

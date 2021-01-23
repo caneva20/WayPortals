@@ -1,7 +1,6 @@
 package me.caneva20.wayportals.signs;
 
 import javax.inject.Inject;
-import lombok.RequiredArgsConstructor;
 import lombok.val;
 import me.caneva20.wayportals.portal.IPortalManager;
 import me.caneva20.wayportals.portal.Portal;
@@ -13,11 +12,16 @@ import org.bukkit.block.Sign;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@RequiredArgsConstructor(onConstructor = @__({@Inject}))
 public class SignManager implements ISignManager {
 
   private final ISignDatabase db;
   private final IPortalManager portalManager;
+
+  @Inject
+  SignManager(ISignDatabase db, IPortalManager portalManager) {
+    this.db = db;
+    this.portalManager = portalManager;
+  }
 
   @Override
   public @Nullable PortalSign get(Sign sign) {

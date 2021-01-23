@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.inject.Inject;
 import lombok.CustomLog;
-import lombok.RequiredArgsConstructor;
 import lombok.val;
 import me.caneva20.wayportals.portal.Portal;
 import me.caneva20.wayportals.portal.PortalManager;
@@ -25,7 +24,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
 @CustomLog
-@RequiredArgsConstructor(onConstructor = @__({@Inject}))
 public class SignEventHandler implements Listener {
 
   private static final Set<Material> SIGNS = Set
@@ -44,6 +42,13 @@ public class SignEventHandler implements Listener {
   private final JavaPlugin plugin;
   private final PortalManager portalManager;
   private final SignManager signManager;
+
+  @Inject
+  SignEventHandler(JavaPlugin plugin, PortalManager portalManager, SignManager signManager) {
+    this.plugin = plugin;
+    this.portalManager = portalManager;
+    this.signManager = signManager;
+  }
 
   private Sign findSign(Block signBlock) {
     return (Sign) signBlock.getState();
