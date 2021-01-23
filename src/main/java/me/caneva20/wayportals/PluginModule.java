@@ -11,10 +11,12 @@ import me.caneva20.messagedispatcher.dispachers.IMessageDispatcher;
 import me.caneva20.wayportals.commands.WayPortalsCommand;
 import me.caneva20.wayportals.events.BindingEventHandler;
 import me.caneva20.wayportals.events.InteractionEventHandler;
-import me.caneva20.wayportals.signs.SignEventHandler;
 import me.caneva20.wayportals.events.TeleportEventHandler;
 import me.caneva20.wayportals.portal.PortalModule;
 import me.caneva20.wayportals.portalbinder.PortalBinderModule;
+import me.caneva20.wayportals.portalbinder.BinderEventHandler;
+import me.caneva20.wayportals.portalbinder.config.IBinderConfig;
+import me.caneva20.wayportals.signs.SignEventHandler;
 import me.caneva20.wayportals.signs.SignModule;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -92,10 +94,15 @@ interface PluginComponent {
 
   SignEventHandler getSignEventHandler();
 
+  BinderEventHandler getBinderEventHandler();
+
   //Commands
   PaperCommandManager getCommandManager();
 
   WayPortalsCommand getWayPortalsCommand();
+
+  //Configs
+  IBinderConfig getDropperConfig();
 
   void inject(WayPortals plugin);
 }
