@@ -40,6 +40,19 @@ public final class InventoryUtility {
     return withdraw(player.getInventory(), material, amount);
   }
 
+  public static boolean deposit(Inventory inventory, ItemStack stack, int amount) {
+    var clone = stack.clone();
+    clone.setAmount(amount);
+
+    var map = inventory.addItem(clone);
+
+    return map.size() == 0;
+  }
+
+  public static boolean deposit(Player player, ItemStack stack, int amount) {
+    return deposit(player.getInventory(), stack, amount);
+  }
+
   private static boolean withdraw(Stream<ItemStack> stacks, int amount) {
     val stack = stacks.filter(x -> x.getAmount() >= amount).findFirst();
 
@@ -51,5 +64,4 @@ public final class InventoryUtility {
 
     return true;
   }
-
 }
