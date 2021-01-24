@@ -35,6 +35,7 @@ public class PortalBinderManager implements IPortalBinderManager {
   }
 
   @Override
+  @Nullable
   public PortalBinder get(ItemStack stack) {
     if (!binderUtility.isBinder(stack)) {
       transform(stack);
@@ -54,7 +55,7 @@ public class PortalBinderManager implements IPortalBinderManager {
   }
 
   @Override
-  public void setPortal(ItemStack stack, Portal portal) {
+  public void setPortal(@NotNull ItemStack stack, @NotNull Portal portal) {
     var meta = getMeta(stack);
 
     meta.getPersistentDataContainer()
@@ -70,7 +71,7 @@ public class PortalBinderManager implements IPortalBinderManager {
   }
 
   @Override
-  public void setPortal(PortalBinder binder, Portal portal) {
+  public void setPortal(@NotNull PortalBinder binder, @NotNull Portal portal) {
     setPortal(binder.stack(), portal);
   }
 
