@@ -14,4 +14,6 @@ public interface IPortalBinderManager {
   PortalBinder create();
 
   void setPortal(@NotNull PortalBinder binder, @NotNull Portal portal);
+
+  boolean isBinder(ItemStack stack);
 }

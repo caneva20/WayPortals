@@ -24,16 +24,14 @@ public class PortalBinderManager implements IPortalBinderManager {
   private final KeyProvider keys;
   private final IConsoleMessageDispatcher dispatcher;
   private final IPortalManager portalManager;
-  private final PortalBinderUtility binderUtility;
   private final IBinderConfig config;
 
   @Inject
   PortalBinderManager(KeyProvider keys, IConsoleMessageDispatcher dispatcher,
-      IPortalManager portalManager, PortalBinderUtility binderUtility, IBinderConfig config) {
+      IPortalManager portalManager, IBinderConfig config) {
     this.keys = keys;
     this.dispatcher = dispatcher;
     this.portalManager = portalManager;
-    this.binderUtility = binderUtility;
     this.config = config;
   }
 
@@ -44,7 +42,7 @@ public class PortalBinderManager implements IPortalBinderManager {
       return null;
     }
 
-    if (!binderUtility.isBinder(stack)) {
+    if (!isBinder(stack)) {
       transform(stack);
     }
 
@@ -81,6 +79,16 @@ public class PortalBinderManager implements IPortalBinderManager {
     binder.portal(portal);
 
     binder.updateLore();
+  }
+
+  @Override
+  public boolean isBinder(ItemStack stack) {
+    if (!stack.hasItemMeta()) {
+      return false;
+    }
+
+    return Objects.requireNonNull(stack.getItemMeta()).getPersistentDataContainer()
+        .has(keys.getPortalBinderKey(), PersistentDataType.INTEGER);
   }
 
   @NotNull
