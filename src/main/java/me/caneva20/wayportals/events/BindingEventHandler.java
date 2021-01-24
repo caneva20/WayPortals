@@ -15,6 +15,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,8 +33,20 @@ public class BindingEventHandler implements Listener {
     this.dispatcher = dispatcher;
   }
 
-  private void bindTarget(PortalBinder binder, @NotNull Portal portal) {
+  private void bindTarget(Player player, PortalBinder binder, @NotNull Portal portal) {
+    InventoryUtility.withdraw(player, binder.stack(), 1);
+
+    ItemStack stack = binder.stack().clone();
+
+    binder = binderManager.get(stack);
+
+    if (binder == null) {
+      return;
+    }
+
     binderManager.setPortal(binder, portal);
+
+    InventoryUtility.deposit(player, binder.stack(), 1);
   }
 
   private void linkPortals(Player player, PortalBinder binder, @NotNull Portal portal) {
@@ -86,7 +99,7 @@ public class BindingEventHandler implements Listener {
     }
 
     if (!binder.hasPortal()) {
-      bindTarget(binder, portal);
+      bindTarget(event.getPlayer(), binder, portal);
     } else {
       linkPortals(event.getPlayer(), binder, portal);
     }
