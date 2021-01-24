@@ -55,24 +55,17 @@ public class PortalBinderManager implements IPortalBinderManager {
   }
 
   @Override
-  public void setPortal(@NotNull ItemStack stack, @NotNull Portal portal) {
-    var meta = getMeta(stack);
+  public void setPortal(@NotNull PortalBinder binder, @NotNull Portal portal) {
+    var meta = getMeta(binder.stack());
 
     meta.getPersistentDataContainer()
         .set(keys.getPortalBinderTargetKey(), PersistentDataType.LONG, portal.id());
 
-    stack.setItemMeta(meta);
-
-    val binder = get(stack);
+    binder.stack().setItemMeta(meta);
 
     binder.portal(portal);
 
     binder.updateLore();
-  }
-
-  @Override
-  public void setPortal(@NotNull PortalBinder binder, @NotNull Portal portal) {
-    setPortal(binder.stack(), portal);
   }
 
   @NotNull
