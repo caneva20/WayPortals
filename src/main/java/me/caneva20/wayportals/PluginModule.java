@@ -1,6 +1,8 @@
 package me.caneva20.wayportals;
 
 import co.aikar.commands.PaperCommandManager;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
 import dagger.Component;
 import dagger.Module;
 import dagger.Provides;
@@ -38,6 +40,8 @@ interface PluginComponent {
 
   //Others
   DatabaseHandler getDatabaseHandler();
+
+  ProtocolManager getProtocolManager();
 
   //Events
   InteractionEventHandler getInteractionEventHandler();
@@ -104,5 +108,11 @@ public class PluginModule {
   @Singleton
   PluginManager providePluginManager() {
     return plugin.getServer().getPluginManager();
+  }
+
+  @Provides
+  @Singleton
+  ProtocolManager provideProtocolManager() {
+    return ProtocolLibrary.getProtocolManager();
   }
 }

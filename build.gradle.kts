@@ -16,6 +16,7 @@ repositories {
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://papermc.io/repo/repository/maven-public/")
     maven("https://repo.aikar.co/content/groups/aikar/")
+    maven("https://repo.dmulloy2.net/nexus/repository/public/")
     maven("https://jitpack.io")
 }
 
@@ -31,6 +32,7 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.16.3-R0.1-SNAPSHOT")
     compileOnly("me.caneva20:C20core:1.1.7")
     compileOnly("com.google.auto.factory:auto-factory:1.0-beta8")
+    compileOnly("com.comphenix.protocol:ProtocolLib:4.5.0")
 
     annotationProcessor("com.google.auto.factory:auto-factory:1.0-beta8")
     annotationProcessor("com.google.dagger:dagger-compiler:2.31")
@@ -54,7 +56,7 @@ val minecraft = Minecraft()
 
 class Minecraft {
     val apiVersion = 1.16
-    val depend = "C20Core"
+    val depend = "C20Core, ProtocolLib"
 }
 
 val envProperties = Properties()
