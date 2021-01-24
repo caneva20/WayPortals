@@ -3,15 +3,12 @@ package me.caneva20.wayportals.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Subcommand;
+import javax.inject.Inject;
 import lombok.val;
 import me.caneva20.messagedispatcher.dispachers.IMessageDispatcher;
 import me.caneva20.wayportals.portalbinder.IPortalBinderManager;
 import me.caneva20.wayportals.portalbinder.PortalBinderUtility;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
-import javax.inject.Inject;
 
 @CommandAlias("wayportals|wp|wayp")
 public class WayPortalsCommand extends BaseCommand {
@@ -29,12 +26,10 @@ public class WayPortalsCommand extends BaseCommand {
   }
 
   @Subcommand("item")
-  public void onItem(Player sender, Material material) {
-    var stack = new ItemStack(material);
+  public void onItem(Player sender) {
+    val binder = binderManager.create();
 
-    binderManager.get(stack);
-
-    sender.getInventory().addItem(stack);
+    sender.getInventory().addItem(binder.stack());
 
     dispatcher.success(sender, "Here's your item!");
   }

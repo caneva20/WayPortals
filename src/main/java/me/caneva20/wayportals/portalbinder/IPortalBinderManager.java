@@ -10,5 +10,8 @@ public interface IPortalBinderManager {
   @Nullable
   PortalBinder get(ItemStack stack);
 
+  @NotNull
+  PortalBinder create();
+
   void setPortal(@NotNull PortalBinder binder, @NotNull Portal portal);
 }

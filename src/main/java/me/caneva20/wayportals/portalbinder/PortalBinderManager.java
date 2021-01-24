@@ -8,6 +8,7 @@ import me.caneva20.messagedispatcher.dispachers.IConsoleMessageDispatcher;
 import me.caneva20.wayportals.KeyProvider;
 import me.caneva20.wayportals.portal.IPortalManager;
 import me.caneva20.wayportals.portal.Portal;
+import me.caneva20.wayportals.portalbinder.config.IBinderConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -24,19 +25,25 @@ public class PortalBinderManager implements IPortalBinderManager {
   private final IConsoleMessageDispatcher dispatcher;
   private final IPortalManager portalManager;
   private final PortalBinderUtility binderUtility;
+  private final IBinderConfig config;
 
   @Inject
   PortalBinderManager(KeyProvider keys, IConsoleMessageDispatcher dispatcher,
-      IPortalManager portalManager, PortalBinderUtility binderUtility) {
+      IPortalManager portalManager, PortalBinderUtility binderUtility, IBinderConfig config) {
     this.keys = keys;
     this.dispatcher = dispatcher;
     this.portalManager = portalManager;
     this.binderUtility = binderUtility;
+    this.config = config;
   }
 
   @Override
   @Nullable
   public PortalBinder get(ItemStack stack) {
+    if (stack.getType() != config.binderMaterial()) {
+      return null;
+    }
+
     if (!binderUtility.isBinder(stack)) {
       transform(stack);
     }
@@ -52,6 +59,14 @@ public class PortalBinderManager implements IPortalBinderManager {
     binder.updateLore();
 
     return binder;
+  }
+
+  @Override
+  @NotNull
+  public PortalBinder create() {
+    val stack = new ItemStack(config.binderMaterial());
+
+    return Objects.requireNonNull(get(stack));
   }
 
   @Override
