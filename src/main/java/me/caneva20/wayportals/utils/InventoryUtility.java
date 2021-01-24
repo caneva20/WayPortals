@@ -18,7 +18,8 @@ public final class InventoryUtility {
   }
 
   public static boolean withdraw(Inventory inventory, Material material, int amount) {
-    val stacks = Arrays.stream(inventory.getContents()).filter(x -> x.getType() == material);
+    val stacks = Arrays.stream(inventory.getContents())
+        .filter(x -> x != null && x.getType() == material);
 
     return withdraw(stacks, amount);
   }
