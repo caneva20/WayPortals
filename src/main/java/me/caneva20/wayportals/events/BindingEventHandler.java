@@ -6,7 +6,6 @@ import me.caneva20.wayportals.portal.IPortalManager;
 import me.caneva20.wayportals.portal.Portal;
 import me.caneva20.wayportals.portalbinder.IPortalBinderManager;
 import me.caneva20.wayportals.portalbinder.PortalBinder;
-import me.caneva20.wayportals.portalbinder.PortalBinderUtility;
 import me.caneva20.wayportals.utils.InventoryUtility;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -22,15 +21,13 @@ import org.jetbrains.annotations.Nullable;
 public class BindingEventHandler implements Listener {
 
   private final IPortalBinderManager binderManager;
-  private final PortalBinderUtility binderUtility;
   private final IPortalManager portalManager;
   private final IMessageDispatcher dispatcher;
 
   @Inject
-  BindingEventHandler(IPortalBinderManager binderManager, PortalBinderUtility binderUtility,
-      IPortalManager portalManager, IMessageDispatcher dispatcher) {
+  BindingEventHandler(IPortalBinderManager binderManager, IPortalManager portalManager,
+      IMessageDispatcher dispatcher) {
     this.binderManager = binderManager;
-    this.binderUtility = binderUtility;
     this.portalManager = portalManager;
     this.dispatcher = dispatcher;
   }
@@ -62,7 +59,7 @@ public class BindingEventHandler implements Listener {
     return portalManager.get(portalBlock.getLocation());
   }
 
-  @EventHandler(priority = EventPriority.LOW)
+  @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
   public void onInteract(PlayerInteractEvent event) {
     var item = event.getItem();
 
@@ -76,13 +73,13 @@ public class BindingEventHandler implements Listener {
       return;
     }
 
-    if (!binderUtility.isBinder(item)) {
+    var binder = binderManager.get(item);
+
+    if (binder == null) {
       return;
     }
 
     var portal = findPortal(block);
-
-    var binder = binderManager.get(item);
 
     if (portal == null) {
       return;
