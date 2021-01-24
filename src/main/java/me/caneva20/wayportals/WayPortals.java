@@ -32,6 +32,7 @@ public final class WayPortals extends JavaPlugin {
     pluginManager.registerEvents(component.getBindingEventHandler(), this);
     pluginManager.registerEvents(component.getTeleportEventHandler(), this);
     pluginManager.registerEvents(component.getSignEventHandler(), this);
+    pluginManager.registerEvents(component.getBindingEventHandler(), this);
 
     database.initialize();
 
