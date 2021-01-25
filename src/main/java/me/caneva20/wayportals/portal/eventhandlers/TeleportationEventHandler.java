@@ -1,4 +1,4 @@
-package me.caneva20.wayportals.events;
+package me.caneva20.wayportals.portal.eventhandlers;
 
 import io.papermc.lib.PaperLib;
 import javax.inject.Inject;
@@ -16,7 +16,7 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.jetbrains.annotations.Nullable;
 
-public class TeleportEventHandler implements Listener {
+public class TeleportationEventHandler implements Listener {
 
   private static final BlockFace[] faces = {BlockFace.SELF, BlockFace.NORTH, BlockFace.SOUTH,
       BlockFace.EAST, BlockFace.WEST};
@@ -24,7 +24,7 @@ public class TeleportEventHandler implements Listener {
   private final IPortalManager portalManager;
 
   @Inject
-  TeleportEventHandler(IPortalManager portalManager) {
+  TeleportationEventHandler(IPortalManager portalManager) {
     this.portalManager = portalManager;
   }
 

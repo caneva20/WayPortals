@@ -29,8 +29,6 @@ public final class WayPortals extends JavaPlugin {
 
     component.getCommandManager().registerCommand(component.getWayPortalsCommand());
 
-    pluginManager.registerEvents(component.getTeleportEventHandler(), this);
-
     for (Listener handler : component.getEventHandlers()) {
       pluginManager.registerEvents(handler, this);
     }
