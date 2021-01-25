@@ -15,11 +15,12 @@ import me.caneva20.wayportals.events.BindingEventHandler;
 import me.caneva20.wayportals.events.InteractionEventHandler;
 import me.caneva20.wayportals.events.TeleportEventHandler;
 import me.caneva20.wayportals.portal.PortalModule;
-import me.caneva20.wayportals.portalbinder.PortalBinderModule;
 import me.caneva20.wayportals.portalbinder.BinderEventHandler;
+import me.caneva20.wayportals.portalbinder.PortalBinderModule;
 import me.caneva20.wayportals.portalbinder.config.IBinderConfig;
 import me.caneva20.wayportals.signs.SignEventHandler;
 import me.caneva20.wayportals.signs.SignModule;
+import me.caneva20.wayportals.utils.SignMenuFactory;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -42,6 +43,8 @@ interface PluginComponent {
   DatabaseHandler getDatabaseHandler();
 
   ProtocolManager getProtocolManager();
+
+  SignMenuFactory getSignMenuFactory();
 
   //Events
   InteractionEventHandler getInteractionEventHandler();
@@ -114,5 +117,11 @@ public class PluginModule {
   @Singleton
   ProtocolManager provideProtocolManager() {
     return ProtocolLibrary.getProtocolManager();
+  }
+
+  @Provides
+  @Singleton
+  SignMenuFactory provideSignMenuFactory() {
+    return new SignMenuFactory(plugin);
   }
 }
