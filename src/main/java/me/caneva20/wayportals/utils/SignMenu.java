@@ -34,7 +34,7 @@ public class SignMenu {
 
   public void getInput(Player player, String title, String extra, Material material,
       BiPredicate<Player, String> onInput) {
-    factory.newMenu(List.of("§f", "§7^ ^ ^ ^ ^ ^ ^ ^ ^", "§2" + title, extra)).material(material)
+    factory.newMenu(List.of("", "^ ^ ^ ^ ^ ^ ^ ^ ^", "§1" + title, extra)).material(material)
         .response((p, s) -> onInput.test(p, ChatColor.stripColor(s[0]))).open(player);
   }
 }
