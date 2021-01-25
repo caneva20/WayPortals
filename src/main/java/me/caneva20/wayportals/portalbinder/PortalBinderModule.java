@@ -4,11 +4,13 @@ import ch.jalu.configme.SettingsManager;
 import ch.jalu.configme.SettingsManagerBuilder;
 import dagger.Module;
 import dagger.Provides;
+import dagger.multibindings.IntoSet;
 import java.io.File;
 import javax.inject.Singleton;
 import me.caneva20.wayportals.portalbinder.config.BinderConfig;
 import me.caneva20.wayportals.portalbinder.config.BinderConfigManager;
 import me.caneva20.wayportals.portalbinder.config.IBinderConfig;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 @Module
@@ -38,6 +40,12 @@ public class PortalBinderModule {
 
   @Provides
   static IPortalBinderManager providePortalBinderManager(PortalBinderManager impl) {
+    return impl;
+  }
+
+  @Provides
+  @IntoSet
+  static Listener providerBinderEventHandler(BinderEventHandler impl) {
     return impl;
   }
 }

@@ -16,7 +16,6 @@ import me.caneva20.wayportals.events.BindingEventHandler;
 import me.caneva20.wayportals.events.InteractionEventHandler;
 import me.caneva20.wayportals.events.TeleportEventHandler;
 import me.caneva20.wayportals.portal.PortalModule;
-import me.caneva20.wayportals.portalbinder.BinderEventHandler;
 import me.caneva20.wayportals.portalbinder.PortalBinderModule;
 import me.caneva20.wayportals.portalbinder.config.IBinderConfig;
 import me.caneva20.wayportals.signs.SignModule;
@@ -55,8 +54,6 @@ interface PluginComponent {
   BindingEventHandler getBindingEventHandler();
 
   TeleportEventHandler getTeleportEventHandler();
-
-  BinderEventHandler getBinderEventHandler();
 
   //Commands
   PaperCommandManager getCommandManager();
