@@ -6,6 +6,7 @@ import com.comphenix.protocol.ProtocolManager;
 import dagger.Component;
 import dagger.Module;
 import dagger.Provides;
+import java.util.Set;
 import javax.inject.Singleton;
 import me.caneva20.messagedispatcher.Messaging;
 import me.caneva20.messagedispatcher.dispachers.IConsoleMessageDispatcher;
@@ -18,9 +19,9 @@ import me.caneva20.wayportals.portal.PortalModule;
 import me.caneva20.wayportals.portalbinder.BinderEventHandler;
 import me.caneva20.wayportals.portalbinder.PortalBinderModule;
 import me.caneva20.wayportals.portalbinder.config.IBinderConfig;
-import me.caneva20.wayportals.signs.SignEventHandler;
 import me.caneva20.wayportals.signs.SignModule;
 import me.caneva20.wayportals.utils.SignMenuFactory;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -47,13 +48,13 @@ interface PluginComponent {
   SignMenuFactory getSignMenuFactory();
 
   //Events
+  Set<Listener> getEventHandlers();
+
   InteractionEventHandler getInteractionEventHandler();
 
   BindingEventHandler getBindingEventHandler();
 
   TeleportEventHandler getTeleportEventHandler();
-
-  SignEventHandler getSignEventHandler();
 
   BinderEventHandler getBinderEventHandler();
 

@@ -4,6 +4,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import me.caneva20.messagedispatcher.dispachers.IConsoleMessageDispatcher;
 import me.caneva20.wayportals.portalbinder.PortalBinderModule;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -31,9 +32,12 @@ public final class WayPortals extends JavaPlugin {
     pluginManager.registerEvents(component.getInteractionEventHandler(), this);
     pluginManager.registerEvents(component.getBindingEventHandler(), this);
     pluginManager.registerEvents(component.getTeleportEventHandler(), this);
-    pluginManager.registerEvents(component.getSignEventHandler(), this);
     pluginManager.registerEvents(component.getBindingEventHandler(), this);
     pluginManager.registerEvents(component.getBinderEventHandler(), this);
+
+    for (Listener handler : component.getEventHandlers()) {
+      pluginManager.registerEvents(handler, this);
+    }
 
     database.initialize();
 

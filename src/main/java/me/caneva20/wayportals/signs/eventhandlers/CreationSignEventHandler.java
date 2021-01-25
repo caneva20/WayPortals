@@ -1,14 +1,11 @@
-package me.caneva20.wayportals.signs;
+package me.caneva20.wayportals.signs.eventhandlers;
 
-import java.util.Map;
-import java.util.Set;
 import javax.inject.Inject;
 import lombok.CustomLog;
 import lombok.val;
 import me.caneva20.wayportals.portal.Portal;
 import me.caneva20.wayportals.portal.PortalManager;
-import me.caneva20.wayportals.portal.events.PortalLinkedEvent;
-import me.caneva20.wayportals.portal.events.PortalUnlinkEvent;
+import me.caneva20.wayportals.signs.SignManager;
 import me.caneva20.wayportals.utils.BlockSearchUtility;
 import me.caneva20.wayportals.utils.InventoryUtility;
 import org.bukkit.Bukkit;
@@ -18,33 +15,20 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.WallSign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
 @CustomLog
-public class SignEventHandler implements Listener {
-
-  private static final Set<Material> SIGNS = Set
-      .of(Material.OAK_WALL_SIGN, Material.SPRUCE_WALL_SIGN, Material.BIRCH_WALL_SIGN,
-          Material.JUNGLE_WALL_SIGN, Material.ACACIA_WALL_SIGN, Material.DARK_OAK_WALL_SIGN,
-          Material.CRIMSON_WALL_SIGN, Material.WARPED_WALL_SIGN);
-
-  private static final Map<Material, Material> signMaterialMap = Map
-      .of(Material.OAK_WALL_SIGN, Material.OAK_SIGN, Material.SPRUCE_WALL_SIGN,
-          Material.SPRUCE_SIGN, Material.BIRCH_WALL_SIGN, Material.BIRCH_SIGN,
-          Material.JUNGLE_WALL_SIGN, Material.JUNGLE_SIGN, Material.ACACIA_WALL_SIGN,
-          Material.ACACIA_SIGN, Material.DARK_OAK_WALL_SIGN, Material.DARK_OAK_SIGN,
-          Material.CRIMSON_WALL_SIGN, Material.CRIMSON_SIGN, Material.WARPED_WALL_SIGN,
-          Material.WARPED_SIGN);
+public class CreationSignEventHandler extends SignEventHandler {
 
   private final JavaPlugin plugin;
   private final PortalManager portalManager;
   private final SignManager signManager;
 
   @Inject
-  SignEventHandler(JavaPlugin plugin, PortalManager portalManager, SignManager signManager) {
+  CreationSignEventHandler(JavaPlugin plugin, PortalManager portalManager,
+      SignManager signManager) {
     this.plugin = plugin;
     this.portalManager = portalManager;
     this.signManager = signManager;
@@ -72,7 +56,7 @@ public class SignEventHandler implements Listener {
   }
 
   private boolean withdrawSign(Sign sign, Player player) {
-    val material = signMaterialMap.get(sign.getType());
+    val material = SIGN_MATERIAL_MAP.get(sign.getType());
 
     return InventoryUtility.withdraw(player, material, 1);
   }
@@ -117,31 +101,5 @@ public class SignEventHandler implements Listener {
     }
 
     createSign(sign, portal);
-  }
-
-  @EventHandler
-  private void onLink(PortalLinkedEvent event) {
-    updatePortal(event.source());
-    updatePortal(event.destination());
-  }
-
-  @EventHandler
-  private void onUnlink(PortalUnlinkEvent event) {
-    updatePortal(event.source());
-    updatePortal(event.destination());
-  }
-
-  private void updatePortal(@Nullable Portal portal) {
-    if (portal == null) {
-      return;
-    }
-
-    val sign = signManager.get(portal);
-
-    if (sign == null) {
-      return;
-    }
-
-    sign.update();
   }
 }
