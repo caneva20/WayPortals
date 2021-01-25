@@ -12,8 +12,6 @@ import me.caneva20.messagedispatcher.Messaging;
 import me.caneva20.messagedispatcher.dispachers.IConsoleMessageDispatcher;
 import me.caneva20.messagedispatcher.dispachers.IMessageDispatcher;
 import me.caneva20.wayportals.commands.WayPortalsCommand;
-import me.caneva20.wayportals.events.BindingEventHandler;
-import me.caneva20.wayportals.events.InteractionEventHandler;
 import me.caneva20.wayportals.events.TeleportEventHandler;
 import me.caneva20.wayportals.portal.PortalModule;
 import me.caneva20.wayportals.portalbinder.PortalBinderModule;
@@ -48,10 +46,6 @@ interface PluginComponent {
 
   //Events
   Set<Listener> getEventHandlers();
-
-  InteractionEventHandler getInteractionEventHandler();
-
-  BindingEventHandler getBindingEventHandler();
 
   TeleportEventHandler getTeleportEventHandler();
 

@@ -10,6 +10,9 @@ import javax.inject.Singleton;
 import me.caneva20.wayportals.portalbinder.config.BinderConfig;
 import me.caneva20.wayportals.portalbinder.config.BinderConfigManager;
 import me.caneva20.wayportals.portalbinder.config.IBinderConfig;
+import me.caneva20.wayportals.portalbinder.eventhandlers.DropEventHandler;
+import me.caneva20.wayportals.portalbinder.eventhandlers.InteractionEventHandler;
+import me.caneva20.wayportals.portalbinder.eventhandlers.PreventInteractionEventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -45,7 +48,19 @@ public class PortalBinderModule {
 
   @Provides
   @IntoSet
-  static Listener providerBinderEventHandler(BinderEventHandler impl) {
+  static Listener provideDropEventHandler(DropEventHandler impl) {
+    return impl;
+  }
+
+  @Provides
+  @IntoSet
+  static Listener provideInteractionEventHandler(InteractionEventHandler impl) {
+    return impl;
+  }
+
+  @Provides
+  @IntoSet
+  static Listener providePreventInteractionEventHandler(PreventInteractionEventHandler impl) {
     return impl;
   }
 }

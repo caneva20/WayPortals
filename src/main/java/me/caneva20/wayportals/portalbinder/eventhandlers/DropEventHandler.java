@@ -1,8 +1,9 @@
-package me.caneva20.wayportals.portalbinder;
+package me.caneva20.wayportals.portalbinder.eventhandlers;
 
 import java.util.Random;
 import javax.inject.Inject;
 import lombok.val;
+import me.caneva20.wayportals.portalbinder.IPortalBinderManager;
 import me.caneva20.wayportals.portalbinder.config.IBinderConfig;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
@@ -11,7 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
-public class BinderEventHandler implements Listener {
+public class DropEventHandler implements Listener {
 
   private final IBinderConfig config;
   private final IPortalBinderManager manager;
@@ -19,7 +20,7 @@ public class BinderEventHandler implements Listener {
   private final Random rand = new Random();
 
   @Inject
-  public BinderEventHandler(IBinderConfig config, IPortalBinderManager manager) {
+  public DropEventHandler(IBinderConfig config, IPortalBinderManager manager) {
     this.config = config;
     this.manager = manager;
   }

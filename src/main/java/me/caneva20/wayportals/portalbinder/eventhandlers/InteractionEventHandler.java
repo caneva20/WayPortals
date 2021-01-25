@@ -1,4 +1,4 @@
-package me.caneva20.wayportals.events;
+package me.caneva20.wayportals.portalbinder.eventhandlers;
 
 import javax.inject.Inject;
 import me.caneva20.messagedispatcher.dispachers.IMessageDispatcher;
@@ -19,14 +19,14 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class BindingEventHandler implements Listener {
+public class InteractionEventHandler implements Listener {
 
   private final IPortalBinderManager binderManager;
   private final IPortalManager portalManager;
   private final IMessageDispatcher dispatcher;
 
   @Inject
-  BindingEventHandler(IPortalBinderManager binderManager, IPortalManager portalManager,
+  InteractionEventHandler(IPortalBinderManager binderManager, IPortalManager portalManager,
       IMessageDispatcher dispatcher) {
     this.binderManager = binderManager;
     this.portalManager = portalManager;
