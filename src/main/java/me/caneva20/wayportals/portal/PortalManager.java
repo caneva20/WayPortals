@@ -130,6 +130,7 @@ public class PortalManager implements IPortalManager {
     val max = new WorldVector3(record.maxX(), record.maxY(), record.maxZ(), record.world());
 
     var portal = new Portal(record.id(), min, max);
+    portal.name(record.name());
 
     Pool.add(portal);
 
