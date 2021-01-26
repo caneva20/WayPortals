@@ -1,11 +1,14 @@
 package me.caneva20.wayportals.portal.db;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import me.caneva20.wayportals.portal.Portal;
 import me.caneva20.wayportals.utils.WorldVector3;
 import org.jetbrains.annotations.Nullable;
 
 @Data
+@AllArgsConstructor
 public class PortalRecord {
 
   private final long id;
@@ -20,6 +23,24 @@ public class PortalRecord {
 
   @Nullable
   private final Long linkedPortalId;
+
+  public PortalRecord(Portal portal) {
+    id = portal.id();
+
+    world = portal.location().world();
+    minX = (int) portal.location().x();
+    minY = (int) portal.location().y();
+    minZ = (int) portal.location().z();
+    maxX = (int) portal.location().x() + portal.width();
+    maxY = (int) portal.location().y() + portal.height();
+    maxZ = (int) portal.location().z() + portal.depth();
+
+    if (portal.link() != null) {
+      linkedPortalId = portal.link().id();
+    } else {
+      linkedPortalId = null;
+    }
+  }
 
   public WorldVector3 location() {
     return new WorldVector3(minX, minY, minZ, world);

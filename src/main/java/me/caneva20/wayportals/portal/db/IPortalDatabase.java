@@ -1,6 +1,7 @@
 package me.caneva20.wayportals.portal.db;
 
 import me.caneva20.wayportals.utils.Region;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface IPortalDatabase {
@@ -15,6 +16,8 @@ public interface IPortalDatabase {
 
   @Nullable
   PortalRecord create(Region region);
+
+  void update(@NotNull PortalRecord record);
 
   void delete(long portalId);
 

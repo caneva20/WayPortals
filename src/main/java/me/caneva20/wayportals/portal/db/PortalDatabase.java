@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import me.caneva20.messagedispatcher.dispachers.IConsoleMessageDispatcher;
 import me.caneva20.wayportals.utils.Region;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Singleton
@@ -62,6 +63,18 @@ public class PortalDatabase implements IPortalDatabase {
     }
 
     return null;
+  }
+
+  @Override
+  public void update(@NotNull PortalRecord record) {
+    try {
+      DB.executeUpdate(
+          "UPDATE portals SET world = ?, min_x = ?, min_y = ?, min_z = ?, max_x = ?, max_y = ?, max_z = ? WHERE id = ?",
+          record.world(), record.minX(), record.minY(), record.minZ(), record.maxX(), record.maxY(),
+          record.maxZ(), record.id());
+    } catch (SQLException ex) {
+      logException(ex);
+    }
   }
 
   @Override
