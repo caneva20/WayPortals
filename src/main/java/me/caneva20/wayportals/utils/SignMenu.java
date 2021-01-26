@@ -19,22 +19,28 @@ public class SignMenu {
   }
 
   public void getInput(Player player, String title, BiPredicate<Player, String> onInput) {
-    getInput(player, title, "", Material.DARK_OAK_SIGN, onInput);
+    getInput(player, title, "", "", Material.DARK_OAK_SIGN, onInput);
   }
 
-  public void getInput(Player player, String title, String extra,
+  public void getInput(Player player, String title, String defaultInput,
       BiPredicate<Player, String> onInput) {
-    getInput(player, title, extra, Material.DARK_OAK_SIGN, onInput);
+    getInput(player, title, defaultInput, "", Material.DARK_OAK_SIGN, onInput);
   }
 
   public void getInput(Player player, String title, Material material,
       BiPredicate<Player, String> onInput) {
-    getInput(player, title, "", material, onInput);
+    getInput(player, title, "", "", material, onInput);
   }
 
-  public void getInput(Player player, String title, String extra, Material material,
+  public void getInput(Player player, String title, String defaultInput, Material material,
       BiPredicate<Player, String> onInput) {
-    factory.newMenu(List.of("", "^ ^ ^ ^ ^ ^ ^ ^ ^", "§1" + title, extra)).material(material)
-        .response((p, s) -> onInput.test(p, ChatColor.stripColor(s[0]))).open(player);
+    getInput(player, title, defaultInput, "", material, onInput);
+  }
+
+  public void getInput(Player player, String title, String defaultInput, String extra,
+      Material material, BiPredicate<Player, String> onInput) {
+    factory.newMenu(List.of(defaultInput, "^ ^ ^ ^ ^ ^ ^ ^ ^", "§1" + title, extra))
+        .material(material).response((p, s) -> onInput.test(p, ChatColor.stripColor(s[0])))
+        .open(player);
   }
 }
