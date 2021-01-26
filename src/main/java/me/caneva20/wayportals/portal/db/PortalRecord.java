@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 public class PortalRecord {
 
   private final long id;
+  private final String name;
 
   private final String world;
   private final int minX;
@@ -27,6 +28,7 @@ public class PortalRecord {
   public PortalRecord(Portal portal) {
     id = portal.id();
 
+    name = portal.name();
     world = portal.location().world();
     minX = (int) portal.location().x();
     minY = (int) portal.location().y();

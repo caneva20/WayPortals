@@ -25,7 +25,7 @@ public class PortalDatabase implements IPortalDatabase {
   public void initialize() {
     try {
       DB.executeUpdate(
-          "CREATE TABLE IF NOT EXISTS 'portals' ('id' INTEGER NOT NULL, 'linked_portal_id' INTEGER, 'world' TEXT NOT NULL DEFAULT '', 'min_x' INTEGER NOT NULL DEFAULT 0, 'min_y' INTEGER NOT NULL DEFAULT 0, 'min_z' INTEGER NOT NULL DEFAULT 0, 'max_x' INTEGER NOT NULL DEFAULT 0, 'max_y' INTEGER NOT NULL DEFAULT 0, 'max_z' INTEGER NOT NULL DEFAULT 0, PRIMARY KEY('id' AUTOINCREMENT), FOREIGN KEY('linked_portal_id') REFERENCES 'portals'('id'))");
+          "CREATE TABLE IF NOT EXISTS 'portals' ('id' INTEGER NOT NULL, 'linked_portal_id' INTEGER, 'name' TEXT NOT NULL DEFAULT '', 'world' TEXT NOT NULL DEFAULT '', 'min_x' INTEGER NOT NULL DEFAULT 0, 'min_y' INTEGER NOT NULL DEFAULT 0, 'min_z' INTEGER NOT NULL DEFAULT 0, 'max_x' INTEGER NOT NULL DEFAULT 0, 'max_y' INTEGER NOT NULL DEFAULT 0, 'max_z' INTEGER NOT NULL DEFAULT 0, PRIMARY KEY('id' AUTOINCREMENT), FOREIGN KEY('linked_portal_id') REFERENCES 'portals'('id'))");
 
       DB.executeUpdate("CREATE INDEX IF NOT EXISTS 'portal_id' ON 'portals'('id')");
     } catch (SQLException ex) {
@@ -56,7 +56,7 @@ public class PortalDatabase implements IPortalDatabase {
 
       deleteOverlapping(region, id);
 
-      return new PortalRecord(id, region.worldName(), region.from().x(), region.from().y(),
+      return new PortalRecord(id, "", region.worldName(), region.from().x(), region.from().y(),
           region.from().z(), region.to().x(), region.to().y(), region.to().z(), null);
     } catch (SQLException ex) {
       logException(ex);
@@ -69,9 +69,9 @@ public class PortalDatabase implements IPortalDatabase {
   public void update(@NotNull PortalRecord record) {
     try {
       DB.executeUpdate(
-          "UPDATE portals SET world = ?, min_x = ?, min_y = ?, min_z = ?, max_x = ?, max_y = ?, max_z = ? WHERE id = ?",
-          record.world(), record.minX(), record.minY(), record.minZ(), record.maxX(), record.maxY(),
-          record.maxZ(), record.id());
+          "UPDATE portals SET name = ?, world = ?, min_x = ?, min_y = ?, min_z = ?, max_x = ?, max_y = ?, max_z = ? WHERE id = ?",
+          record.name(), record.world(), record.minX(), record.minY(), record.minZ(), record.maxX(),
+          record.maxY(), record.maxZ(), record.id());
     } catch (SQLException ex) {
       logException(ex);
     }
@@ -108,6 +108,7 @@ public class PortalDatabase implements IPortalDatabase {
     }
 
     var id = row.getInt("id");
+    var name = row.getString("name");
     var world = row.getString("world");
     var minX = row.getInt("min_x");
     var minY = row.getInt("min_y");
@@ -117,7 +118,7 @@ public class PortalDatabase implements IPortalDatabase {
     var maxZ = row.getInt("max_z");
     var linkedPortalId = (Long) row.get("linked_portal_id");
 
-    return new PortalRecord(id, world, minX, minY, minZ, maxX, maxY, maxZ, linkedPortalId);
+    return new PortalRecord(id, name, world, minX, minY, minZ, maxX, maxY, maxZ, linkedPortalId);
   }
 
   @Nullable

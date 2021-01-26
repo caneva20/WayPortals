@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public class Portal {
 
   private final long id;
+  private String name;
 
   private final PortalAxis axis;
   private final WorldVector3 location;
