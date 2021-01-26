@@ -34,10 +34,6 @@ public class CreationSignEventHandler extends SignEventHandler {
     this.signManager = signManager;
   }
 
-  private Sign findSign(Block signBlock) {
-    return (Sign) signBlock.getState();
-  }
-
   @Nullable
   private Portal findPortal(Block signBlock) {
     var oppositeFace = ((WallSign) signBlock.getBlockData()).getFacing().getOppositeFace();
@@ -76,7 +72,9 @@ public class CreationSignEventHandler extends SignEventHandler {
 
   @EventHandler
   private void onSignPlace(BlockPlaceEvent event) {
-    if (!SIGNS.contains(event.getBlock().getType())) {
+    var sign = getSign(event.getBlock());
+
+    if (sign == null) {
       return;
     }
 
@@ -94,7 +92,6 @@ public class CreationSignEventHandler extends SignEventHandler {
     }
 
     event.setCancelled(true);
-    var sign = findSign(event.getBlock());
 
     if (!withdrawSign(sign, event.getPlayer())) {
       return;
