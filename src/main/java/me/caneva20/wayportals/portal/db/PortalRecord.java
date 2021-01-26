@@ -19,7 +19,7 @@ public class PortalRecord {
   private final int maxZ;
 
   @Nullable
-  private final Integer linkedPortalId;
+  private final Long linkedPortalId;
 
   public WorldVector3 location() {
     return new WorldVector3(minX, minY, minZ, world);

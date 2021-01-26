@@ -102,7 +102,7 @@ public class PortalDatabase implements IPortalDatabase {
     var maxX = row.getInt("max_x");
     var maxY = row.getInt("max_y");
     var maxZ = row.getInt("max_z");
-    var linkedPortalId = (Integer) row.get("linked_portal_id");
+    var linkedPortalId = (Long) row.get("linked_portal_id");
 
     return new PortalRecord(id, world, minX, minY, minZ, maxX, maxY, maxZ, linkedPortalId);
   }
