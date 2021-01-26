@@ -12,6 +12,7 @@ import me.caneva20.wayportals.portal.events.PortalDeleteEvent;
 import me.caneva20.wayportals.portal.events.PortalLinkEvent;
 import me.caneva20.wayportals.portal.events.PortalLinkedEvent;
 import me.caneva20.wayportals.portal.events.PortalUnlinkEvent;
+import me.caneva20.wayportals.portal.events.PortalUpdateEvent;
 import me.caneva20.wayportals.utils.WorldVector3;
 import org.bukkit.Location;
 import org.bukkit.plugin.PluginManager;
@@ -74,6 +75,19 @@ public class PortalManager implements IPortalManager {
     }
 
     return create(record);
+  }
+
+  @Override
+  public void update(@NotNull Portal portal) {
+    var event = new PortalUpdateEvent(portal);
+
+    pluginManager.callEvent(event);
+
+    if (event.isCancelled()) {
+      return;
+    }
+
+    db.update(new PortalRecord(portal));
   }
 
   @Override

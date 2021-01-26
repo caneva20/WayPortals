@@ -12,6 +12,8 @@ public interface IPortalManager {
   @Nullable
   Portal find(long id);
 
+  void update(@NotNull Portal portal);
+
   void delete(@NotNull Portal portal);
 
   void link(@NotNull Portal portal, @Nullable Portal target);
