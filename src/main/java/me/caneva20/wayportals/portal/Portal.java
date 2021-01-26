@@ -2,6 +2,7 @@ package me.caneva20.wayportals.portal;
 
 import java.util.Objects;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import me.caneva20.wayportals.utils.Vector3;
 import me.caneva20.wayportals.utils.WorldVector3;
@@ -10,11 +11,12 @@ import org.bukkit.Location;
 import org.jetbrains.annotations.Nullable;
 
 @Getter
+@Setter
 @ToString
 public class Portal {
 
   private final long id;
-  private String name;
+  private String name = "";
 
   private final PortalAxis axis;
   private final WorldVector3 location;
