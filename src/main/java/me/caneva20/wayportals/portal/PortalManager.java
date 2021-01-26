@@ -134,11 +134,9 @@ public class PortalManager implements IPortalManager {
 
     Pool.add(portal);
 
-    if (record.linkedPortalId() != null) {
-      //Load link
-      @SuppressWarnings({"UnnecessaryUnboxing", "ConstantConditions"}) val linkedPortalId = record
-          .linkedPortalId().intValue();
+    val linkedPortalId = record.linkedPortalId();
 
+    if (linkedPortalId != null) {
       portal.link = Pool.find(linkedPortalId);
 
       if (portal.link == null) {
