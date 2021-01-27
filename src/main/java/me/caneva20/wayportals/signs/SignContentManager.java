@@ -1,5 +1,6 @@
 package me.caneva20.wayportals.signs;
 
+import javax.inject.Inject;
 import lombok.val;
 import me.caneva20.wayportals.portal.IPortalManager;
 
@@ -7,7 +8,8 @@ public class SignContentManager implements ISignContentManager {
 
   private final IPortalManager portalManager;
 
-  public SignContentManager(IPortalManager portalManager) {
+  @Inject
+  SignContentManager(IPortalManager portalManager) {
     this.portalManager = portalManager;
   }
 

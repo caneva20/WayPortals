@@ -17,7 +17,7 @@ public abstract class SignModule {
   abstract ISignManager bindSignManager(SignManager impl);
 
   @Binds
-  abstract ISignContentManager bindSignManager(SignContentManager impl);
+  abstract ISignContentManager bindSignContentManager(SignContentManager impl);
 
   @Binds
   abstract ISignDatabase bindSignDatabase(SignDatabase impl);
