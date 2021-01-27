@@ -61,14 +61,18 @@ public final class SignMenuFactory {
             if (menu == null) {
               return;
             }
+
             event.setCancelled(true);
 
-            boolean success = menu.response
-                .test(player, event.getPacket().getStringArrays().read(0));
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+              boolean success = menu.response
+                  .test(player, event.getPacket().getStringArrays().read(0));
 
-            if (!success && menu.opensOnFail()) {
-              Bukkit.getScheduler().runTaskLater(plugin, () -> menu.open(player), 2L);
-            }
+              if (!success && menu.opensOnFail()) {
+                Bukkit.getScheduler().runTaskLater(plugin, () -> menu.open(player), 2L);
+              }
+            }, 0L);
+
             player.sendBlockChange(menu.position.toLocation(player.getWorld()),
                 Material.AIR.createBlockData());
           }
