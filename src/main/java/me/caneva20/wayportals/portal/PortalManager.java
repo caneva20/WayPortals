@@ -1,18 +1,18 @@
 package me.caneva20.wayportals.portal;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Objects;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.val;
 import me.caneva20.wayportals.portal.db.IPortalDatabase;
 import me.caneva20.wayportals.portal.db.PortalRecord;
 import me.caneva20.wayportals.portal.events.PortalCreateEvent;
-import me.caneva20.wayportals.portal.events.PortalDeleteEvent;
+import me.caneva20.wayportals.portal.events.PortalDeletedEvent;
 import me.caneva20.wayportals.portal.events.PortalLinkEvent;
 import me.caneva20.wayportals.portal.events.PortalLinkedEvent;
-import me.caneva20.wayportals.portal.events.PortalUnlinkEvent;
+import me.caneva20.wayportals.portal.events.PortalUnlinkedEvent;
 import me.caneva20.wayportals.portal.events.PortalUpdateEvent;
+import me.caneva20.wayportals.portal.events.PortalUpdatedEvent;
 import me.caneva20.wayportals.utils.WorldVector3;
 import org.bukkit.Location;
 import org.bukkit.plugin.PluginManager;
@@ -67,7 +67,11 @@ public class PortalManager implements IPortalManager {
 
   @Override
   @Nullable
-  public Portal find(long id) {
+  public Portal find(@Nullable Long id) {
+    if (id == null) {
+      return null;
+    }
+
     final var record = db.find(id);
 
     if (record == null) {
@@ -78,8 +82,27 @@ public class PortalManager implements IPortalManager {
   }
 
   @Override
+  public @Nullable Portal findLink(@Nullable Long id) {
+    if (id == null) {
+      return null;
+    }
+
+    var portal = find(id);
+
+    if (portal == null) {
+      return null;
+    }
+
+    if (portal.linkId == null) {
+      return null;
+    }
+
+    return find(portal.linkId);
+  }
+
+  @Override
   public void update(@NotNull Portal portal) {
-    var event = new PortalUpdateEvent(portal);
+    var event = new PortalUpdateEvent(portal.id());
 
     pluginManager.callEvent(event);
 
@@ -88,55 +111,59 @@ public class PortalManager implements IPortalManager {
     }
 
     db.update(new PortalRecord(portal));
+
+    pluginManager.callEvent(new PortalUpdatedEvent(portal.id()));
   }
 
   @Override
   public void delete(@NotNull Portal portal) {
-    Pool.remove(portal);
+    if (portal.linkId != null) {
+      val link = find(portal.linkId);
 
-    if (portal.link != null) {
-      link(portal.link, null);
+      if (link != null) {
+        unlink(link);
+      }
     }
-
-    link(portal, null);
 
     db.delete(portal.id());
 
-    pluginManager.callEvent(new PortalDeleteEvent(portal));
+    pluginManager.callEvent(new PortalDeletedEvent(portal.id()));
   }
 
   @Override
-  public void link(@NotNull Portal src, @Nullable Portal dst) {
-    if (dst == null) {
-      db.setLinkId(src.id(), null);
-
-      src.link = null;
-      return;
-    }
-
-    if (src.link != null && (src.link == dst || src.link.id() == dst.id())) {
-      return;
-    }
-
-    val event = new PortalLinkEvent(src, dst);
+  public void link(@NotNull Portal src, @NotNull Portal dst) {
+    val event = new PortalLinkEvent(src.id(), dst.id());
     pluginManager.callEvent(event);
 
     if (event.isCancelled()) {
       return;
     }
 
-    if (src.link != null) {
-      link(src.link, null);
-
-      pluginManager.callEvent(new PortalUnlinkEvent(src, src.link));
+    //Remove current src link, if it exists
+    if (src.linkId != null) {
+      unlink(Objects.requireNonNull(find(src.linkId)));
     }
 
-    src.link = dst;
-    db.setLinkId(src.id(), dst.id());
+    //Remove current dst link, if it exists
+    if (dst.linkId != null) {
+      unlink(Objects.requireNonNull(find(dst.linkId)));
+    }
 
-    link(dst, src);
+    link(src, dst.id());
+    link(dst, src.id());
 
-    pluginManager.callEvent(new PortalLinkedEvent(src, dst));
+    pluginManager.callEvent(new PortalLinkedEvent(src.id(), dst.id()));
+  }
+
+  private void unlink(@NotNull Portal portal) {
+    link(portal, (Long) null);
+
+    pluginManager.callEvent(new PortalUnlinkedEvent(portal.id(), portal.linkId()));
+  }
+
+  private void link(@NotNull Portal src, @Nullable Long dstId) {
+    src.linkId(dstId);
+    db.setLinkId(src.id(), dstId);
   }
 
   private Portal create(@NotNull PortalRecord record) {
@@ -144,43 +171,10 @@ public class PortalManager implements IPortalManager {
     val max = new WorldVector3(record.maxX(), record.maxY(), record.maxZ(), record.world());
 
     var portal = new Portal(record.id(), min, max);
+
     portal.name(record.name());
-
-    Pool.add(portal);
-
-    val linkedPortalId = record.linkedPortalId();
-
-    if (linkedPortalId != null) {
-      portal.link = Pool.find(linkedPortalId);
-
-      if (portal.link == null) {
-        //Load linked portal
-        var linkRecord = db.find(linkedPortalId);
-
-        if (linkRecord != null) {
-          portal.link = create(linkRecord);
-        }
-      }
-    }
+    portal.linkId(record.linkedPortalId());
 
     return portal;
-  }
-}
-
-class Pool {
-
-  private static final Set<Portal> pool = new HashSet<>();
-
-  static void add(Portal portal) {
-    pool.add(portal);
-  }
-
-  static void remove(Portal portal) {
-    pool.remove(portal);
-  }
-
-  @Nullable
-  static Portal find(long id) {
-    return pool.stream().filter(x -> x.id() == id).findFirst().orElse(null);
   }
 }

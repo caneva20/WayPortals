@@ -37,8 +37,8 @@ public class PortalRecord {
     maxY = (int) portal.location().y() + portal.height();
     maxZ = (int) portal.location().z() + portal.depth();
 
-    if (portal.link() != null) {
-      linkedPortalId = portal.link().id();
+    if (portal.linkId() != null) {
+      linkedPortalId = portal.linkId();
     } else {
       linkedPortalId = null;
     }

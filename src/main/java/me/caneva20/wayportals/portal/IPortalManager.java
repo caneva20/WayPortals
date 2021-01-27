@@ -10,11 +10,14 @@ public interface IPortalManager {
   Portal get(Location location);
 
   @Nullable
-  Portal find(long id);
+  Portal find(@Nullable Long id);
+
+  @Nullable
+  Portal findLink(@Nullable Long id);
 
   void update(@NotNull Portal portal);
 
   void delete(@NotNull Portal portal);
 
-  void link(@NotNull Portal portal, @Nullable Portal target);
+  void link(@NotNull Portal portal, @NotNull Portal target);
 }

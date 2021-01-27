@@ -23,9 +23,8 @@ public class Portal {
 
   private final Vector3 size;
 
-  @ToString.Exclude
   @Nullable
-  Portal link;
+  Long linkId;
 
   Portal(long id, WorldVector3 min, WorldVector3 max) {
     this.id = id;
