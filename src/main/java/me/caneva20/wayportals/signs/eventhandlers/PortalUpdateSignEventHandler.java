@@ -36,6 +36,7 @@ public class PortalUpdateSignEventHandler extends SignEventHandler {
   @EventHandler
   private void onUpdate(PortalUpdateEvent event) {
     updatePortal(event.portal());
+    updatePortal(event.portal().link());
   }
 
   private void updatePortal(@Nullable Portal portal) {
