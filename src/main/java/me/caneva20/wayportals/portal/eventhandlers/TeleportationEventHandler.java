@@ -53,7 +53,13 @@ public class TeleportationEventHandler implements Listener {
   }
 
   private boolean hasValidLink(Portal portal) {
-    var link = portal.link();
+    var linkId = portal.linkId();
+
+    if (linkId == null) {
+      return false;
+    }
+
+    var link = portalManager.find(linkId);
 
     if (link == null) {
       return false;

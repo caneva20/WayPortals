@@ -47,7 +47,7 @@ public class InteractionSignEventHandler extends SignEventHandler {
       return;
     }
 
-    var portal = portalSign.portal();
+    var portal = portalManager.find(portalSign.portalId());
 
     if (portal == null) {
       return;
