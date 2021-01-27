@@ -38,20 +38,16 @@ public class PortalSign {
 
   public void update() {
     val link = portal.link();
+    var destination = "(nowhere)";
 
     if (link != null) {
-      sign.setLine(0, String.format("%s -> %s", portal.id(), link.id()));
-      sign.setLine(1, "");
-    } else {
-      sign.setLine(0, portal.id() + "");
-      sign.setLine(1, "Not linked");
+      destination = link.name();
     }
 
-    sign.setLine(2, portal.location().world());
-
-    sign.setLine(3, String
-        .format("%s, %s, %s", (int) portal.location().x(), (int) portal.location().y(),
-            (int) portal.location().z()));
+    sign.setLine(0, String.format("§7[§6%s§7]", portal.name()));
+    sign.setLine(1, String.format("§7→ §e%s", destination));
+    sign.setLine(2, "");
+    sign.setLine(3, "§8(right click me)");
 
     sign.update();
   }
