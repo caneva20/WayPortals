@@ -2,7 +2,6 @@ package me.caneva20.wayportals.signs;
 
 import javax.inject.Inject;
 import lombok.val;
-import me.caneva20.wayportals.portal.IPortalManager;
 import me.caneva20.wayportals.portal.Portal;
 import me.caneva20.wayportals.signs.db.ISignDatabase;
 import me.caneva20.wayportals.signs.db.SignRecord;
@@ -15,12 +14,12 @@ import org.jetbrains.annotations.Nullable;
 public class SignManager implements ISignManager {
 
   private final ISignDatabase db;
-  private final IPortalManager portalManager;
+  private final ISignContentManager contentManager;
 
   @Inject
-  SignManager(ISignDatabase db, IPortalManager portalManager) {
+  SignManager(ISignDatabase db, ISignContentManager contentManager) {
     this.db = db;
-    this.portalManager = portalManager;
+    this.contentManager = contentManager;
   }
 
   @Override
@@ -28,7 +27,7 @@ public class SignManager implements ISignManager {
   public PortalSign get(Sign sign) {
     var record = db.find(new WorldVector3(sign.getLocation()));
 
-    return create(record, sign, null);
+    return create(record, sign);
   }
 
   @Override
@@ -49,7 +48,7 @@ public class SignManager implements ISignManager {
     val block = world.getBlockAt(record.x(), record.y(), record.z());
 
     if (block.getState() instanceof Sign) {
-      return create(record, (Sign) block.getState(), portal);
+      return create(record, (Sign) block.getState());
     }
 
     db.delete(record.id());
@@ -66,21 +65,20 @@ public class SignManager implements ISignManager {
 
     val record = db.create(new WorldVector3(sign.getLocation()), (int) portal.id());
 
-    return create(record, sign, portal);
+    return create(record, sign);
   }
 
   @Nullable
-  private PortalSign create(@Nullable SignRecord record, @NotNull Sign sign,
-      @Nullable Portal portal) {
+  private PortalSign create(@Nullable SignRecord record, @NotNull Sign sign) {
 
     if (record == null) {
       return null;
     }
 
-    if (portal == null) {
-      portal = portalManager.find(record.portalId());
-    }
+    val portalSign = new PortalSign(record.id(), record.location(), sign, record.portalId());
 
-    return new PortalSign(record.id(), record.location(), sign, portal);
+    contentManager.update(portalSign);
+
+    return portalSign;
   }
 }

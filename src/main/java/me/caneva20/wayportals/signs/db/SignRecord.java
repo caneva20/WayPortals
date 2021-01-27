@@ -7,7 +7,7 @@ import me.caneva20.wayportals.utils.WorldVector3;
 public class SignRecord {
 
   private final int id;
-  private final int portalId;
+  private final long portalId;
 
   private final String world;
   private final int x;

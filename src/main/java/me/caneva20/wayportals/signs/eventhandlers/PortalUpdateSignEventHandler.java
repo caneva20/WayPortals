@@ -7,6 +7,7 @@ import me.caneva20.wayportals.portal.Portal;
 import me.caneva20.wayportals.portal.events.PortalLinkedEvent;
 import me.caneva20.wayportals.portal.events.PortalUnlinkEvent;
 import me.caneva20.wayportals.portal.events.PortalUpdateEvent;
+import me.caneva20.wayportals.signs.ISignContentManager;
 import me.caneva20.wayportals.signs.SignManager;
 import org.bukkit.event.EventHandler;
 import org.jetbrains.annotations.Nullable;
@@ -15,10 +16,12 @@ import org.jetbrains.annotations.Nullable;
 public class PortalUpdateSignEventHandler extends SignEventHandler {
 
   private final SignManager signManager;
+  private final ISignContentManager contentManager;
 
   @Inject
-  PortalUpdateSignEventHandler(SignManager signManager) {
+  PortalUpdateSignEventHandler(SignManager signManager, ISignContentManager contentManager) {
     this.signManager = signManager;
+    this.contentManager = contentManager;
   }
 
   @EventHandler
@@ -50,6 +53,6 @@ public class PortalUpdateSignEventHandler extends SignEventHandler {
       return;
     }
 
-    sign.update();
+    contentManager.update(sign);
   }
 }
