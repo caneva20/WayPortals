@@ -1,13 +1,10 @@
 package me.caneva20.wayportals.portal;
 
-import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import me.caneva20.wayportals.utils.Vector3;
 import me.caneva20.wayportals.utils.WorldVector3;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.jetbrains.annotations.Nullable;
 
 @Getter
@@ -41,66 +38,5 @@ public class Portal {
 
     this.size = new Vector3(width, height, depth).add(Vector3.one);
     this.axis = min.x() == max.x() ? PortalAxis.Z : PortalAxis.X;
-  }
-
-  public boolean hasLink() {
-    return link != null;
-  }
-
-  @Nullable
-  public Location getDestination(Location playerPosition) {
-    final var playerVPos = new WorldVector3(playerPosition);
-
-    if (link == null) {
-      return null;
-    }
-
-    var relativePos = playerVPos.subtract(location);
-
-    if (inverse()) {
-      relativePos = size.subtract(relativePos.x(), size.y() - relativePos.y(), relativePos.z());
-    }
-
-    var pos = relativePos.divide(size);
-
-    if (axis != link.axis) {
-      pos = new Vector3(pos.z(), pos.y(), pos.x());
-    }
-
-    pos = pos.multiply(link.size).add(link.location);
-
-    var world = Bukkit.getServer().getWorld(link.location().world());
-
-    return new Location(world, pos.x(), pos.y(), pos.z(), playerPosition.getYaw() + getLinkYaw(),
-        playerPosition.getPitch());
-  }
-
-  private float getLinkYaw() {
-    if (link == null) {
-      return 0;
-    }
-
-    if (axis == link.axis) {
-      return 0;
-    }
-
-    var dirX = location.x() > link.location.x() ? 1 : -1;
-    var dirZ = location.z() > link.location.z() ? -1 : 1;
-    var axisF = axis == PortalAxis.X ? 1 : -1;
-
-    return 90 * dirZ * dirX * axisF;
-  }
-
-  private boolean inverse() {
-    Objects.requireNonNull(link);
-
-    if (axis != link.axis) {
-      var a = location.x() > link.location.x();
-      var b = location.z() > link.location.z();
-
-      return a == b;
-    }
-
-    return false;
   }
 }

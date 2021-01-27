@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import lombok.val;
 import me.caneva20.wayportals.portal.IPortalManager;
 import me.caneva20.wayportals.portal.Portal;
+import me.caneva20.wayportals.teleport.ITeleportManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,10 +23,12 @@ public class TeleportationEventHandler implements Listener {
       BlockFace.EAST, BlockFace.WEST};
 
   private final IPortalManager portalManager;
+  private final ITeleportManager teleportManager;
 
   @Inject
-  TeleportationEventHandler(IPortalManager portalManager) {
+  TeleportationEventHandler(IPortalManager portalManager, ITeleportManager teleportManager) {
     this.portalManager = portalManager;
+    this.teleportManager = teleportManager;
   }
 
   @Nullable
@@ -92,7 +95,7 @@ public class TeleportationEventHandler implements Listener {
     }
 
     event.setCancelled(true);
-    var destination = portal.getDestination(event.getFrom());
+    var destination = teleportManager.getDestination(portal, event.getFrom());
 
     if (destination != null) {
       PaperLib.teleportAsync(player, destination, TeleportCause.PLUGIN);
