@@ -4,6 +4,7 @@ import co.aikar.idb.DB;
 import co.aikar.idb.DbRow;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import me.caneva20.messagedispatcher.dispachers.IConsoleMessageDispatcher;
@@ -116,9 +117,11 @@ public class PortalDatabase implements IPortalDatabase {
     var maxX = row.getInt("max_x");
     var maxY = row.getInt("max_y");
     var maxZ = row.getInt("max_z");
-    var linkedPortalId = (Long) row.get("linked_portal_id");
 
-    return new PortalRecord(id, name, world, minX, minY, minZ, maxX, maxY, maxZ, linkedPortalId);
+    var linkIdOptional = Optional.ofNullable((Number) row.get("linked_portal_id"));
+    var linkId = linkIdOptional.isPresent() ? linkIdOptional.get().longValue() : null;
+
+    return new PortalRecord(id, name, world, minX, minY, minZ, maxX, maxY, maxZ, linkId);
   }
 
   @Nullable
