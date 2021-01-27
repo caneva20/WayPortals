@@ -5,6 +5,7 @@ import dagger.Module;
 import dagger.multibindings.IntoSet;
 import me.caneva20.wayportals.signs.db.ISignDatabase;
 import me.caneva20.wayportals.signs.db.SignDatabase;
+import me.caneva20.wayportals.signs.eventhandlers.CreationSignEventHandler;
 import me.caneva20.wayportals.signs.eventhandlers.InteractionSignEventHandler;
 import me.caneva20.wayportals.signs.eventhandlers.PortalUpdateSignEventHandler;
 import org.bukkit.event.Listener;
@@ -13,7 +14,14 @@ import org.bukkit.event.Listener;
 public abstract class SignModule {
 
   @Binds
+  abstract ISignManager bindSignManager(SignManager impl);
+
+  @Binds
   abstract ISignDatabase bindSignDatabase(SignDatabase impl);
+
+  @Binds
+  @IntoSet
+  abstract Listener bindCreationSignEventHandler(CreationSignEventHandler impl);
 
   @Binds
   @IntoSet
