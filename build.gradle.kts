@@ -46,7 +46,7 @@ val appDescription = "A more vanilla alternative to /home"
 val authors = "caneva20"
 val website = "https://github.com/caneva20/WayPortals"
 
-val version = "0.3.0"
+val version = "0.4.0"
 val isSnapshot = true
 
 val versionFinal = "${version}${(if (isSnapshot) "-SNAPSHOT" else "")}"
