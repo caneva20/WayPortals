@@ -34,9 +34,9 @@ public class InteractionEventHandler implements Listener {
   }
 
   private void bindTarget(Player player, PortalBinder binder, @NotNull Portal portal) {
-    InventoryUtility.withdraw(player, binder.stack(), 1);
-
     ItemStack stack = binder.stack().clone();
+
+    InventoryUtility.withdraw(player, binder.stack(), 1);
 
     binder = binderManager.get(stack);
 
@@ -46,7 +46,7 @@ public class InteractionEventHandler implements Listener {
 
     binderManager.setPortal(binder, portal);
 
-    InventoryUtility.deposit(player, binder.stack(), 1);
+    InventoryUtility.deposit(player, stack, 1);
   }
 
   private void linkPortals(Player player, PortalBinder binder, @NotNull Portal portal) {
