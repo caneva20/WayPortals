@@ -31,25 +31,25 @@ public class TeleportationEventHandler implements Listener {
     this.teleportManager = teleportManager;
   }
 
-  @Nullable
-  private Portal findPortal(Block block) {
-    Block portalBlock = null;
-
-    for (BlockFace face : faces) {
-      portalBlock = block.getRelative(face);
-
-      if (portalBlock.getType() == Material.NETHER_PORTAL) {
-        break;
-      }
-
-      portalBlock = null;
+  @EventHandler
+  private void onPortalTeleport(PlayerPortalEvent event) {
+    if (event.getCause() != TeleportCause.NETHER_PORTAL) {
+      return;
     }
 
-    if (portalBlock == null) {
-      return null;
+    var player = event.getPlayer();
+    var portal = findPortal(event.getFrom().getBlock());
+
+    if (portal == null || !hasValidLink(portal)) {
+      return;
     }
 
-    return portalManager.get(portalBlock.getLocation());
+    event.setCancelled(true);
+    var destination = teleportManager.getDestination(portal, event.getFrom());
+
+    if (destination != null) {
+      PaperLib.teleportAsync(player, destination, TeleportCause.PLUGIN);
+    }
   }
 
   private boolean hasValidLink(Portal portal) {
@@ -87,24 +87,25 @@ public class TeleportationEventHandler implements Listener {
     return true;
   }
 
-  @EventHandler
-  private void onPortalTeleport(PlayerPortalEvent event) {
-    if (event.getCause() != TeleportCause.NETHER_PORTAL) {
-      return;
+  private @Nullable Block findPortalBlock(Block block) {
+    for (BlockFace face : faces) {
+      val portalBlock = block.getRelative(face);
+
+      if (portalBlock.getType() == Material.NETHER_PORTAL) {
+        return portalBlock;
+      }
     }
 
-    var player = event.getPlayer();
-    var portal = findPortal(event.getFrom().getBlock());
+    return null;
+  }
 
-    if (portal == null || !hasValidLink(portal)) {
-      return;
+  private @Nullable Portal findPortal(Block block) {
+    var portalBlock = findPortalBlock(block);
+
+    if (portalBlock == null) {
+      return null;
     }
 
-    event.setCancelled(true);
-    var destination = teleportManager.getDestination(portal, event.getFrom());
-
-    if (destination != null) {
-      PaperLib.teleportAsync(player, destination, TeleportCause.PLUGIN);
-    }
+    return portalManager.get(portalBlock.getLocation());
   }
 }
