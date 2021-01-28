@@ -13,6 +13,7 @@ import me.caneva20.wayportals.portal.events.PortalLinkedEvent;
 import me.caneva20.wayportals.portal.events.PortalUnlinkedEvent;
 import me.caneva20.wayportals.portal.events.PortalUpdateEvent;
 import me.caneva20.wayportals.portal.events.PortalUpdatedEvent;
+import me.caneva20.wayportals.utils.Region;
 import me.caneva20.wayportals.utils.WorldVector3;
 import org.bukkit.Location;
 import org.bukkit.plugin.PluginManager;
@@ -48,14 +49,7 @@ public class PortalManager implements IPortalManager {
     var record = db.find(region);
 
     if (record == null) {
-      val event = new PortalCreateEvent(region);
-      pluginManager.callEvent(event);
-
-      if (event.isCancelled()) {
-        return null;
-      }
-
-      record = db.create(region);
+      record = create(region);
     }
 
     if (record == null) {
@@ -176,5 +170,16 @@ public class PortalManager implements IPortalManager {
     portal.linkId(record.linkedPortalId());
 
     return portal;
+  }
+
+  private @Nullable PortalRecord create(Region region) {
+    val createEvent = new PortalCreateEvent(region);
+    pluginManager.callEvent(createEvent);
+
+    if (createEvent.isCancelled()) {
+      return null;
+    }
+
+    return db.create(region);
   }
 }
