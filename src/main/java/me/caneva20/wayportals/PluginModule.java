@@ -15,6 +15,7 @@ import me.caneva20.wayportals.commands.WayPortalsCommand;
 import me.caneva20.wayportals.portal.PortalModule;
 import me.caneva20.wayportals.portalbinder.PortalBinderModule;
 import me.caneva20.wayportals.portalbinder.config.IBinderConfig;
+import me.caneva20.wayportals.settings.SettingsModule;
 import me.caneva20.wayportals.signs.SignModule;
 import me.caneva20.wayportals.teleport.TeleportModule;
 import me.caneva20.wayportals.utils.SignMenuFactory;
@@ -24,7 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 @Singleton
 @Component(modules = {PluginModule.class, PortalModule.class, SignModule.class,
-    PortalBinderModule.class, TeleportModule.class})
+    PortalBinderModule.class, TeleportModule.class, SettingsModule.class})
 interface PluginComponent {
 
   //Plugin instances
