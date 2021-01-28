@@ -62,7 +62,7 @@ public class PortalManager implements IPortalManager {
       return null;
     }
 
-    return create(record);
+    return build(record);
   }
 
   @Override
@@ -78,7 +78,7 @@ public class PortalManager implements IPortalManager {
       return null;
     }
 
-    return create(record);
+    return build(record);
   }
 
   @Override
@@ -166,7 +166,7 @@ public class PortalManager implements IPortalManager {
     db.setLinkId(src.id(), dstId);
   }
 
-  private Portal create(@NotNull PortalRecord record) {
+  private Portal build(@NotNull PortalRecord record) {
     val min = new WorldVector3(record.minX(), record.minY(), record.minZ(), record.world());
     val max = new WorldVector3(record.maxX(), record.maxY(), record.maxZ(), record.world());
 
