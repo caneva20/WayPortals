@@ -9,6 +9,7 @@ import ch.jalu.configme.properties.MapProperty;
 import ch.jalu.configme.properties.Property;
 import ch.jalu.configme.properties.types.PrimitivePropertyType;
 import java.util.Map;
+import me.caneva20.wayportals.portal.config.BuildPermissionCheckMode;
 import org.bukkit.Material;
 
 public class PluginConfig implements SettingsHolder {
@@ -26,4 +27,12 @@ public class PluginConfig implements SettingsHolder {
   @Comment("If this is set to true, the binder will be able to drop event with a silk touch tool")
   public static final Property<Boolean> DROP_WITH_SILKTOUCH = newProperty(
       "binder.drop-with-silktouch", false);
+
+  @Comment({"Which method to use when checking for build permission", "Valid options are:",
+      "ALL: This will check every block of the portal",
+      "CORNERS: This will check all four corners of the portal",
+      "FIRST: This will check only the block tha was interacted with"})
+  public static final Property<BuildPermissionCheckMode> BUILD_PERMISSION_CHECK_MODE = newProperty(
+      BuildPermissionCheckMode.class, "portal.build-permission-check-mode",
+      BuildPermissionCheckMode.CORNERS);
 }
