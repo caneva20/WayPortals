@@ -6,14 +6,16 @@ import org.jetbrains.annotations.Nullable;
 
 public interface IPortalManager {
 
-  @Nullable
-  Portal get(Location location);
+  /**
+   * Tries to load a portal at the given location
+   *
+   * @return The portal found at [location] null if none is found
+   */
+  @Nullable Portal get(Location location);
 
-  @Nullable
-  Portal find(@Nullable Long id);
+  @Nullable Portal find(@Nullable Long id);
 
-  @Nullable
-  Portal findLink(@Nullable Long id);
+  @Nullable Portal findLink(@Nullable Long id);
 
   void update(@NotNull Portal portal);
 

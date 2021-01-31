@@ -32,11 +32,6 @@ public class PortalManager implements IPortalManager {
     this.pluginManager = pluginManager;
   }
 
-  /**
-   * Creates or load a portal at [location]
-   *
-   * @return The portal found at [location] or null if none is found
-   */
   @Override
   @Nullable
   public Portal get(Location location) {
