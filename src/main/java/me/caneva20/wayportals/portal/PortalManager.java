@@ -1,9 +1,14 @@
 package me.caneva20.wayportals.portal;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import lombok.CustomLog;
 import lombok.val;
+import me.caneva20.messagedispatcher.dispachers.IMessageDispatcher;
+import me.caneva20.wayportals.portal.config.IPortalConfig;
 import me.caneva20.wayportals.portal.db.IPortalDatabase;
 import me.caneva20.wayportals.portal.db.PortalRecord;
 import me.caneva20.wayportals.portal.events.PortalCreateEvent;
@@ -15,21 +20,30 @@ import me.caneva20.wayportals.portal.events.PortalUpdateEvent;
 import me.caneva20.wayportals.portal.events.PortalUpdatedEvent;
 import me.caneva20.wayportals.utils.Region;
 import me.caneva20.wayportals.utils.WorldVector3;
+import me.caneva20.wayportals.utils.events.FakeBlockBreakEvent;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Singleton
+@CustomLog
 public class PortalManager implements IPortalManager {
 
   private final IPortalDatabase db;
   private final PluginManager pluginManager;
+  private final IPortalConfig config;
+  private final IMessageDispatcher dispatcher;
 
   @Inject
-  PortalManager(IPortalDatabase db, PluginManager pluginManager) {
+  PortalManager(IPortalDatabase db, PluginManager pluginManager, IPortalConfig config,
+      IMessageDispatcher dispatcher) {
     this.db = db;
     this.pluginManager = pluginManager;
+    this.config = config;
+    this.dispatcher = dispatcher;
   }
 
   @Override
@@ -42,10 +56,6 @@ public class PortalManager implements IPortalManager {
     }
 
     var record = db.find(region);
-
-    if (record == null) {
-      record = create(region);
-    }
 
     if (record == null) {
       return null;
@@ -87,6 +97,36 @@ public class PortalManager implements IPortalManager {
     }
 
     return find(portal.linkId);
+  }
+
+  public @Nullable Portal create(Location location, Player player) {
+    var region = PortalUtility.find(location.getBlock());
+
+    if (!canBuild(player, location, region)) {
+      //TODO: Load string from lang file
+      dispatcher.error(player, "Sorry, but you can't build here");
+
+      return null;
+    }
+
+    if (region == null) {
+      return null;
+    }
+
+    val createEvent = new PortalCreateEvent(region);
+    pluginManager.callEvent(createEvent);
+
+    if (createEvent.isCancelled()) {
+      return null;
+    }
+
+    var record = db.create(region);
+
+    if (record == null) {
+      return null;
+    }
+
+    return build(record);
   }
 
   @Override
@@ -167,14 +207,52 @@ public class PortalManager implements IPortalManager {
     return portal;
   }
 
-  private @Nullable PortalRecord create(Region region) {
-    val createEvent = new PortalCreateEvent(region);
-    pluginManager.callEvent(createEvent);
+  private boolean canBuild(Player player, Location location, Region region) {
+    Set<Block> blocks = new HashSet<>();
 
-    if (createEvent.isCancelled()) {
-      return null;
+    var world = location.getWorld();
+
+    switch (config.buildPermissionCheckMode()) {
+      case CORNERS:
+        val minX = region.from().x();
+        val maxX = region.to().x();
+
+        val minY = region.from().y();
+        val maxY = region.to().y();
+
+        val minZ = region.from().z();
+        val maxZ = region.to().z();
+
+        blocks.add(new Location(world, minX, minY, minZ).getBlock());
+        blocks.add(new Location(world, minX, maxY, minZ).getBlock());
+
+        blocks.add(new Location(world, maxX, minY, maxZ).getBlock());
+        blocks.add(new Location(world, maxX, maxY, maxZ).getBlock());
+        break;
+      case ALL:
+        for (int x = region.from().x(); x <= region.to().x(); x++) {
+          for (int y = region.from().y(); y <= region.to().y(); y++) {
+            for (int z = region.from().z(); z <= region.to().z(); z++) {
+              blocks.add(new Location(world, x, y, z).getBlock());
+            }
+          }
+        }
+        break;
+      case FIRST:
+        blocks.add(location.getBlock());
+        break;
     }
 
-    return db.create(region);
+    for (Block block : blocks) {
+      var fakeEvent = new FakeBlockBreakEvent(block, player);
+
+      pluginManager.callEvent(fakeEvent);
+
+      if (fakeEvent.isCancelled()) {
+        return false;
+      }
+    }
+
+    return true;
   }
 }

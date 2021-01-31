@@ -68,8 +68,14 @@ public class InteractionEventHandler implements Listener {
   }
 
   @Nullable
-  private Portal findPortal(Block portalBlock) {
-    return portalManager.get(portalBlock.getLocation());
+  private Portal findOrCreatePortal(Block portalBlock, Player player) {
+    var portal = portalManager.get(portalBlock.getLocation());
+
+    if (portal == null) {
+      return portalManager.create(portalBlock.getLocation(), player);
+    }
+
+    return portal;
   }
 
   @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
@@ -92,7 +98,7 @@ public class InteractionEventHandler implements Listener {
       return;
     }
 
-    var portal = findPortal(block);
+    var portal = findOrCreatePortal(block, event.getPlayer());
 
     if (portal == null) {
       return;

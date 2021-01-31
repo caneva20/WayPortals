@@ -1,6 +1,7 @@
 package me.caneva20.wayportals.portal;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,6 +17,8 @@ public interface IPortalManager {
   @Nullable Portal find(@Nullable Long id);
 
   @Nullable Portal findLink(@Nullable Long id);
+
+  @Nullable Portal create(Location location, Player creator);
 
   void update(@NotNull Portal portal);
 
